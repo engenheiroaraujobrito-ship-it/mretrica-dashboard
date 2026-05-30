@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚡ MR Elétrica — Dashboard Live</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:#0F1117; font-family:'Segoe UI',sans-serif; color:#E2E8F0; min-height:100vh; padding:24px; }
+  h2 { font-size:12px; color:#94A3B8; font-weight:600; margin-bottom:14px; text-transform:uppercase; letter-spacing:.06em; }
+  .header { text-align:center; margin-bottom:28px; }
+  .header h1 { font-size:24px; font-weight:800; color:#F1F5F9; }
+  .header p { color:#64748B; font-size:12px; margin-top:4px; }
+  .kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:20px; }
+  .kpi { border-radius:12px; padding:16px 20px; border:1px solid; }
+  .kpi .label { font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:#94A3B8; margin-bottom:6px; }
+  .kpi .value { font-size:20px; font-weight:800; line-height:1; }
+  .kpi .sub { font-size:11px; color:#475569; margin-top:4px; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+  .grid3 { display:grid; grid-template-columns:2fr 1fr; gap:14px; margin-bottom:14px; }
+  .card { background:#0D1422; border:1px solid #1E293B; border-radius:12px; padding:20px; }
+  .filters { display:flex; gap:10px; margin-bottom:20px; align-items:center; flex-wrap:wrap; }
+  .btn { padding:6px 16px; border-radius:99px; border:none; cursor:pointer; font-size:12px; font-weight:600; background:#1E293B; color:#94A3B8; }
+  .btn.active { background:#F59E0B; color:#000; }
+  select { padding:6px 12px; border-radius:8px; border:1px solid #334155; background:#1E293B; color:#E2E8F0; font-size:12px; }
+  .total-filtro { margin-left:auto; font-size:12px; color:#F59E0B; font-weight:700; }
+  table { width:100%; border-collapse:collapse; font-size:12px; }
+  th { padding:8px 12px; background:#1E293B; color:#94A3B8; font-weight:600; text-align:left; border-bottom:1px solid #334155; white-space:nowrap; }
+  td { padding:8px 12px; border-bottom:1px solid #1E293B; }
+  .badge { padding:2px 8px; border-radius:99px; font-size:10px; font-weight:600; }
+  .bar-item { margin-bottom:12px; }
+  .bar-header { display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; }
+  .bar-track { background:#1E293B; border-radius:99px; height:6px; }
+  .bar-fill { height:6px; border-radius:99px; }
+  .winner { margin-top:14px; padding:10px 12px; background:#0F2A1A; border-radius:8px; border:1px solid #34D39933; }
+  .winner .wlabel { font-size:10px; color:#34D399; font-weight:700; margin-bottom:4px; }
+  .winner .wval { font-size:14px; color:#34D399; font-weight:800; }
+  .update-bar { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; font-size:11px; color:#475569; }
+  .live-badge { background:#022C22; color:#34D399; padding:2px 8px; border-radius:99px; font-size:10px; font-weight:700; }
+  @media(max-width:768px){ .kpis{grid-template-columns:1fr 1fr;} .grid2,.grid3{grid-template-columns:1fr;} }
+</style>
+</head>
+<body>
+<div class="update-bar">
+  <span>⚡ MR Elétrica · Dashboard Financeiro</span>
+  <span><span class="live-badge">🟢 LIVE</span> · Atualizado: <span id="update-time"></span></span>
+</div>
+<div class="header">
+  <h1>MR Elétrica — Dashboard Financeiro</h1>
+  <p id="subtitulo">Eng. Márcio Brito · São José dos Campos – SP</p>
+</div>
+<div class="kpis" id="kpis"></div>
+<div class="filters" id="filters">
+  <span>Filtrar por:</span>
+  <button class="btn active" onclick="setAno('Todos',this)">Todos os anos</button>
+  <button class="btn" onclick="setAno('2025',this)">2025</button>
+  <button class="btn" onclick="setAno('2026',this)">2026</button>
+  <select id="sel-tipo" onchange="setTipo(this.value)"><option value="Todos">Todos os tipos</option></select>
+  <span class="total-filtro" id="total-filtro"></span>
+</div>
+<div class="grid2">
+  <div class="card"><h2>Faturamento por Ano</h2><canvas id="cAnual" height="180"></canvas></div>
+  <div class="card"><h2>Distribuição por Tipo</h2><canvas id="cPizza" height="180"></canvas></div>
+</div>
+<div class="grid3">
+  <div class="card"><h2>Receita por Tipo</h2><canvas id="cTipoBar" height="200"></canvas></div>
+  <div class="card"><h2>Por Cidade</h2><div id="cidades"></div><div id="winner"></div></div>
+</div>
+<div class="card">
+  <h2>Registro Detalhado — <span id="qtd-label"></span></h2>
+  <div style="overflow-x:auto"><table><thead><tr id="thead"></tr></thead><tbody id="tbody"></tbody></table></div>
+</div>
+<p style="text-align:center;font-size:10px;color:#1E293B;margin-top:16px">MR Elétrica · CREA 2016129020</p>
+<script>
+const SHEET_ID='1ObqWN-FX_Zq3Vs5UAPi1v-yDpYLYG6lU43mboKaHAb8';
+const DADOS=[{ano:2025,cliente:'Óticas Dinis',tipo:'Elétrica Comercial',cidade:'SJC',data:'04/05/2025',valor:450,fonte:'NFS-e'},{ano:2025,cliente:'Do Valle',tipo:'Aterramento',cidade:'SJC',data:'10/05/2025',valor:429.59,fonte:'NFS-e'},{ano:2025,cliente:'Elídia - Santa Lúcia',tipo:'Elétrica Residencial',cidade:'SJC',data:'Abr/2025',valor:2360,fonte:'Proposta'},{ano:2025,cliente:'Romilda Vila Ema',tipo:'Elétrica Residencial',cidade:'SJC',data:'Mai/2025',valor:880,fonte:'Proposta'},{ano:2025,cliente:'Mercado São Bento',tipo:'Manutenção',cidade:'SJC',data:'Mai/2025',valor:150,fonte:'Informado'},{ano:2025,cliente:'Leandro Laboratório',tipo:'Manutenção',cidade:'SJC',data:'Jun/2025',valor:550,fonte:'Proposta'},{ano:2025,cliente:'Salles Corretora',tipo:'Manutenção',cidade:'SJC',data:'Jun/2025',valor:300,fonte:'Proposta'},{ano:2025,cliente:'Do Valle',tipo:'Elétrica Industrial',cidade:'SJC',data:'28/06/2025',valor:2576.9,fonte:'NFS-e'},{ano:2025,cliente:'Faculdade Inspirar',tipo:'Elétrica Comercial',cidade:'SJC',data:'Jul/2025',valor:6400,fonte:'Proposta'},{ano:2025,cliente:'NAVE Veterinário',tipo:'Manutenção',cidade:'Jacareí',data:'30/09/2025',valor:750,fonte:'NFS-e'},{ano:2025,cliente:'Velox Solar',tipo:'Manutenção Solar',cidade:'SJC',data:'04/11/2025',valor:304,fonte:'NFS-e'},{ano:2025,cliente:'Velox Solar',tipo:'Manutenção Solar',cidade:'SJC',data:'13/11/2025',valor:575.97,fonte:'NFS-e'},{ano:2026,cliente:'Restaurante Singular',tipo:'Manutenção',cidade:'SJC',data:'Dez/2025',valor:350,fonte:'Proposta'},{ano:2026,cliente:'Palco CenterVale',tipo:'Elétrica Temporária',cidade:'SJC',data:'Fev/2026',valor:350,fonte:'ART'},{ano:2026,cliente:'Putin/Ediana',tipo:'Elétrica Comercial',cidade:'SJC',data:'24/04/2026',valor:1250,fonte:'NFS-e'},{ano:2026,cliente:'Marcos Bueno',tipo:'WallBox SAVE',cidade:'Jacareí',data:'20/05/2026',valor:1250,fonte:'NFS-e'},{ano:2026,cliente:'Odair',tipo:'WallBox SAVE',cidade:'Jacareí',data:'12/05/2026',valor:750,fonte:'NFS-e'},{ano:2026,cliente:'Paulo Elias',tipo:'WallBox SAVE',cidade:'Jacareí',data:'12/05/2026',valor:1457.68,fonte:'NFS-e'},{ano:2026,cliente:'Jorge Pimentel',tipo:'WallBox SAVE',cidade:'SJC',data:'25/05/2026',valor:1250,fonte:'NFS-e'},{ano:2026,cliente:'Adão Neto',tipo:'WallBox SAVE',cidade:'SJC',data:'30/05/2026',valor:1165.72,fonte:'NFS-e'},{ano:2026,cliente:'Obrapar/Belloninho',tipo:'Laudo Engenharia',cidade:'SJC',data:'14/05/2026',valor:1230,fonte:'ART'}];
+const CORES={'WallBox SAVE':'#065F46','Elétrica Comercial':'#1D4ED8','Elétrica Residencial':'#B45309','Elétrica Industrial':'#6D28D9','Elétrica Temporária':'#0891B2','Manutenção':'#6B7280','Manutenção Solar':'#D97706','Aterramento':'#7C3AED','Laudo Engenharia':'#BE185D'};
+const fmt=v=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(v);
+let DDS=[...DADOS],fAno='Todos',fTipo='Todos',charts={};
+const isOnline=location.protocol!=='file:';
+async function init(){document.getElementById('update-time').textContent=new Date().toLocaleString('pt-BR');if(isOnline){try{const url=`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;const res=await fetch(url);const text=await res.text();const json=JSON.parse(text.replace(/.*?({.*}).*/s,'$1'));DDS=json.table.rows.map(r=>({ano:parseInt(r.c[0]?.v),cliente:r.c[1]?.v||'',tipo:r.c[2]?.v||'',cidade:r.c[3]?.v||'',data:r.c[5]?.v||'',valor:parseFloat(r.c[6]?.v)||0,fonte:r.c[7]?.v||''})).filter(r=>r.ano&&r.cliente);}catch(e){DDS=[...DADOS];}}render();}
+function gF(){return DDS.filter(r=>(fAno==='Todos'||r.ano===+fAno)&&(fTipo==='Todos'||r.tipo===fTipo));}
+function setAno(a,b){fAno=a;document.querySelectorAll('.btn').forEach(x=>x.classList.remove('active'));if(b)b.classList.add('active');render();}
+function setTipo(t){fTipo=t;render();}
+function dC(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
+function render(){const f=gF();const tot=f.reduce((s,r)=>s+r.valor,0);const anos=[...new Set(DDS.map(r=>r.ano))].sort();const t25=DDS.filter(r=>r.ano===2025).reduce((s,r)=>s+r.valor,0);const t26=DDS.filter(r=>r.ano===2026).reduce((s,r)=>s+r.valor,0);const tG=DDS.reduce((s,r)=>s+r.valor,0);const tk=f.length?tot/f.length:0;document.getElementById('kpis').innerHTML=[{label:'Total Geral',value:fmt(tG),sub:DDS.length+' serviços',cor:'#F59E0B',bg:'#1C1600',bord:'#F59E0B33'},{label:'Faturamento 2025',value:fmt(t25),sub:DDS.filter(r=>r.ano===2025).length+' serviços',cor:'#60A5FA',bg:'#0D1B33',bord:'#60A5FA33'},{label:'Faturamento 2026',value:fmt(t26),sub:DDS.filter(r=>r.ano===2026).length+' serviços',cor:'#34D399',bg:'#022C22',bord:'#34D39933'},{label:'Ticket Médio',value:fmt(tk),sub:f.length+' filtrados',cor:'#A78BFA',bg:'#1E1B4B',bord:'#A78BFA33'}].map(k=>`<div class="kpi" style="background:${k.bg};border-color:${k.bord}"><div class="label">${k.label}</div><div class="value" style="color:${k.cor}">${k.value}</div><div class="sub">${k.sub}</div></div>`).join('');document.getElementById('total-filtro').textContent=f.length+' serviços · '+fmt(tot);document.getElementById('qtd-label').textContent=f.length+' serviços';const tipos=[...new Set(DDS.map(r=>r.tipo))];document.getElementById('sel-tipo').innerHTML='<option value="Todos">Todos os tipos</option>'+tipos.map(t=>`<option value="${t}"${t===fTipo?' selected':''}>${t}</option>`).join('');dC('anual');charts['anual']=new Chart(document.getElementById('cAnual'),{type:'bar',data:{labels:anos.map(String),datasets:[{label:'Fat.',data:anos.map(a=>DDS.filter(r=>r.ano===a).reduce((s,r)=>s+r.valor,0)),backgroundColor:['#60A5FA','#34D399'],borderRadius:6}]},options:{plugins:{legend:{display:false}},scales:{y:{ticks:{callback:v=>`R$${(v/1000).toFixed(0)}k`,color:'#475569'},grid:{color:'#1E293B'}},x:{ticks:{color:'#475569'},grid:{display:false}}}}});const pT=Object.entries(f.reduce((a,r)=>{a[r.tipo]=(a[r.tipo]||0)+r.valor;return a},{}));dC('pizza');charts['pizza']=new Chart(document.getElementById('cPizza'),{type:'doughnut',data:{labels:pT.map(x=>x[0]),datasets:[{data:pT.map(x=>x[1]),backgroundColor:pT.map(x=>CORES[x[0]]||'#6B7280'),borderWidth:2,borderColor:'#0D1422'}]},options:{plugins:{legend:{labels:{color:'#94A3B8',font:{size:9}}}}}});const srt=[...pT].sort((a,b)=>b[1]-a[1]);dC('tipobar');charts['tipobar']=new Chart(document.getElementById('cTipoBar'),{type:'bar',data:{labels:srt.map(x=>x[0]),datasets:[{label:'Total',data:srt.map(x=>x[1]),backgroundColor:srt.map(x=>CORES[x[0]]||'#6B7280'),borderRadius:4}]},options:{indexAxis:'y',plugins:{legend:{display:false}},scales:{x:{ticks:{callback:v=>`R$${(v/1000).toFixed(0)}k`,color:'#475569'},grid:{color:'#1E293B'}},y:{ticks:{color:'#E2E8F0',font:{size:9}},grid:{display:false}}}}});const pC=Object.entries(f.reduce((a,r)=>{a[r.cidade]=(a[r.cidade]||0)+r.valor;return a},{})).sort((a,b)=>b[1]-a[1]);const cc=['#60A5FA','#34D399','#F59E0B','#A78BFA'];document.getElementById('cidades').innerHTML=pC.map(([c,v],i)=>`<div class="bar-item"><div class="bar-header"><span style="color:#E2E8F0;font-weight:600">${c}</span><span style="color:#F59E0B;font-weight:700">${fmt(v)}</span></div><div class="bar-track"><div class="bar-fill" style="width:${tot?(v/tot*100).toFixed(0):0}%;background:${cc[i%4]}"></div></div></div>`).join('');if(f.length){const m=f.reduce((a,b)=>a.valor>b.valor?a:b);document.getElementById('winner').innerHTML=`<div class="winner"><div class="wlabel">🏆 Maior Serviço</div><div style="color:#E2E8F0;font-size:12px">${m.cliente}</div><div class="wval">${fmt(m.valor)}</div></div>`;}document.getElementById('thead').innerHTML=['Ano','Cliente','Tipo','Cidade','Data','Valor','Fonte'].map(h=>`<th>${h}</th>`).join('');document.getElementById('tbody').innerHTML=[...f].sort((a,b)=>b.valor-a.valor).map(r=>`<tr><td style="color:#64748B">${r.ano}</td><td style="color:#E2E8F0;font-weight:600">${r.cliente}</td><td><span class="badge" style="background:${CORES[r.tipo]||'#6B7280'}22;color:${CORES[r.tipo]||'#94A3B8'}">${r.tipo}</span></td><td style="color:#94A3B8">${r.cidade}</td><td style="color:#64748B">${r.data}</td><td style="color:#34D399;font-weight:800">${fmt(r.valor)}</td><td><span class="badge" style="background:${r.fonte==='NFS-e'?'#022C22':'#1E293B'};color:${r.fonte==='NFS-e'?'#34D399':'#94A3B8'}">${r.fonte}</span></td></tr>`).join('')+`<tr style="border-top:2px solid #334155"><td colspan="5" style="text-align:right;color:#94A3B8;font-weight:700;padding:10px 12px">TOTAL</td><td style="color:#F59E0B;font-weight:800;font-size:14px;padding:10px 12px">${fmt(tot)}</td><td></td></tr>`;}
+init();if(isOnline)setInterval(init,300000);
+</script>
+</body>
+</html>
