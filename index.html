@@ -313,6 +313,321 @@ loadData();
 if(location.protocol!=='file:')setInterval(loadData,POLL_MS);
 </script>
 </body>
+</html><!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>⚡ MR Elétrica — Dashboard Live</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0B0F1A;font-family:'Segoe UI',system-ui,sans-serif;color:#E2E8F0;min-height:100vh}
+:root{
+  --bg:#0B0F1A;--card:#0D1422;--bord:#1E293B;--bord2:#334155;
+  --txt:#E2E8F0;--muted:#64748B;--dim:#94A3B8;
+  --gold:#F59E0B;--green:#34D399;--blue:#60A5FA;--purple:#A78BFA;--red:#F87171;
+  --gold-bg:#1C1600;--green-bg:#022C22;--blue-bg:#0D1B33;--purple-bg:#1E1B4B;
+}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:12px 28px;background:linear-gradient(90deg,#0D1B2A 0%,#0B1622 100%);border-bottom:1px solid var(--bord);position:sticky;top:0;z-index:100;}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-icon{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,#F59E0B,#EF4444);display:flex;align-items:center;justify-content:center;font-size:18px;}
+.brand-name{font-size:16px;font-weight:800;color:#F1F5F9;letter-spacing:-.3px}
+.brand-sub{font-size:11px;color:var(--muted);margin-top:1px}
+.topbar-right{display:flex;align-items:center;gap:14px}
+.live-pill{background:var(--green-bg);color:var(--green);border:1px solid #34D39933;border-radius:20px;padding:4px 12px;font-size:11px;font-weight:700;display:flex;align-items:center;gap:6px;}
+.live-dot{width:7px;height:7px;background:var(--green);border-radius:50%;animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.update-txt{font-size:11px;color:var(--muted)}
+.reload-btn{padding:5px 12px;background:var(--bord);border:1px solid var(--bord2);border-radius:8px;color:var(--dim);font-size:11px;cursor:pointer;transition:all .2s;font-family:inherit;}
+.reload-btn:hover{background:var(--bord2);color:var(--txt)}
+.main{max-width:1440px;margin:0 auto;padding:24px 28px 60px}
+.tabs{display:flex;gap:4px;margin-bottom:24px;border-bottom:1px solid var(--bord);padding-bottom:0}
+.tab{padding:10px 20px;font-size:13px;font-weight:600;cursor:pointer;border-radius:8px 8px 0 0;border:1px solid transparent;color:var(--muted);transition:all .2s;margin-bottom:-1px;}
+.tab.active{background:var(--card);border-color:var(--bord);border-bottom-color:var(--card);color:var(--txt);}
+.tab:hover:not(.active){color:var(--dim)}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+.filters{display:flex;gap:8px;margin-bottom:20px;align-items:center;flex-wrap:wrap}
+.flabel{font-size:11px;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.btn{padding:5px 14px;border-radius:99px;border:1px solid var(--bord2);cursor:pointer;font-size:12px;font-weight:600;background:var(--card);color:var(--dim);font-family:inherit;transition:all .2s;}
+.btn:hover{border-color:var(--gold);color:var(--gold)}
+.btn.active{background:var(--gold);border-color:var(--gold);color:#000}
+.btn.active-green{background:var(--green-bg);border-color:var(--green);color:var(--green)}
+select{padding:5px 10px;border-radius:8px;border:1px solid var(--bord2);background:var(--card);color:var(--txt);font-size:12px;font-family:inherit;cursor:pointer;}
+.divv{width:1px;height:22px;background:var(--bord2)}
+.total-filtro{margin-left:auto;font-size:12px;color:var(--gold);font-weight:700}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
+.kpi{border-radius:12px;padding:18px 20px;border:1px solid;position:relative;overflow:hidden}
+.kpi::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+.kpi.gold::after{background:linear-gradient(90deg,#F59E0B,#FBBF24)}
+.kpi.green::after{background:linear-gradient(90deg,#34D399,#6EE7B7)}
+.kpi.blue::after{background:linear-gradient(90deg,#60A5FA,#93C5FD)}
+.kpi.purple::after{background:linear-gradient(90deg,#A78BFA,#C4B5FD)}
+.kpi .label{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--dim);margin-bottom:8px;font-weight:700}
+.kpi .value{font-size:22px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
+.kpi .sub{font-size:11px;color:var(--muted);margin-top:6px}
+.card{background:var(--card);border:1px solid var(--bord);border-radius:12px;padding:20px}
+.card h2{font-size:11px;color:var(--dim);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:16px}
+.card-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px}
+.card-title{font-size:13px;font-weight:700;color:var(--txt)}
+.card-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.cbadge{padding:3px 10px;border-radius:99px;font-size:10px;font-weight:700;background:var(--bord);color:var(--dim);}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.g3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:14px;margin-bottom:14px}
+.bar-item{margin-bottom:14px}
+.bar-header{display:flex;justify-content:space-between;font-size:12px;margin-bottom:5px}
+.bar-name{color:var(--txt);font-weight:600}
+.bar-val{color:var(--gold);font-weight:800;font-variant-numeric:tabular-nums}
+.bar-track{background:var(--bord);border-radius:99px;height:7px;overflow:hidden}
+.bar-fill{height:7px;border-radius:99px;transition:width 1s cubic-bezier(.4,0,.2,1)}
+.winner{margin-top:16px;padding:12px 14px;background:#0F2A1A;border-radius:9px;border:1px solid #34D39933;}
+.winner .wl{font-size:10px;color:var(--green);font-weight:700;margin-bottom:3px}
+.winner .wn{font-size:12px;color:var(--txt);font-weight:600}
+.winner .wv{font-size:16px;color:var(--green);font-weight:900;margin-top:2px}
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead th{padding:9px 12px;background:#111827;color:var(--dim);font-weight:700;text-align:left;border-bottom:1px solid var(--bord2);white-space:nowrap;font-size:10px;text-transform:uppercase;letter-spacing:.05em;}
+thead th:first-child{padding-left:20px}
+tbody tr{border-bottom:1px solid var(--bord);transition:background .15s}
+tbody tr:hover{background:#111827}
+tbody td{padding:10px 12px;vertical-align:middle}
+tbody td:first-child{padding-left:20px}
+.td-cli{color:var(--txt);font-weight:700}
+.td-val{color:var(--green);font-weight:900;font-variant-numeric:tabular-nums}
+.td-ct{color:var(--blue);font-size:11px;font-weight:600}
+.td-muted{color:var(--muted);font-size:11px}
+.badge{display:inline-block;padding:2px 8px;border-radius:99px;font-size:10px;font-weight:700;}
+tfoot td{background:#111827;padding:10px 12px;border-top:2px solid var(--bord2);}
+tfoot td:first-child{padding-left:20px}
+.kpi-approved-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px;}
+.ct-tag{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:3px 10px;font-size:10px;font-weight:700;}
+.ct-tag.wallbox{background:#022C22;color:#34D399;border:1px solid #34D39933}
+.ct-tag.diag{background:#0D1B33;color:#60A5FA;border:1px solid #60A5FA33}
+.parcel-wrap{display:flex;flex-direction:column;gap:2px}
+.parcel-row{display:flex;gap:5px;align-items:center}
+.parcel-lbl{color:var(--muted);font-size:10px;min-width:18px}
+.parcel-val{color:var(--txt);font-size:11px;font-weight:700;font-variant-numeric:tabular-nums}
+.status-tag{display:inline-block;padding:3px 9px;border-radius:99px;font-size:10px;font-weight:700;background:#1C1600;color:#F59E0B;border:1px solid #F59E0B33;}
+.status-tag.green{background:#022C22;color:#34D399;border-color:#34D39933}
+.fluxo-row{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-radius:9px;border:1px solid;margin-bottom:8px;}
+.fluxo-fase{font-size:12px;font-weight:700}
+.fluxo-moment{font-size:11px;color:var(--muted);margin-top:2px}
+.fluxo-val{font-size:16px;font-weight:900;font-variant-numeric:tabular-nums}
+.fluxo-pct{font-size:10px;font-weight:700;margin-top:2px;text-align:right}
+.fade-in{opacity:0;transform:translateY(12px);animation:fadeUp .45s ease forwards}
+@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
+.fade-in:nth-child(1){animation-delay:.04s}
+.fade-in:nth-child(2){animation-delay:.08s}
+.fade-in:nth-child(3){animation-delay:.12s}
+.fade-in:nth-child(4){animation-delay:.16s}
+@media(max-width:1100px){.kpis,.kpi-approved-grid{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.main{padding:16px}.g2,.g3{grid-template-columns:1fr}.kpis,.kpi-approved-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-icon">⚡</div>
+    <div>
+      <div class="brand-name">MR Elétrica — Dashboard Financeiro</div>
+      <div class="brand-sub">Eng. Márcio Brito · CREA 2016129020 · São José dos Campos – SP</div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="live-pill"><span class="live-dot"></span>LIVE</div>
+    <div class="update-txt">Atualizado: <span id="update-time">—</span></div>
+    <button class="reload-btn" onclick="loadData()">↻ Atualizar</button>
+  </div>
+</div>
+<div class="main">
+  <div class="tabs">
+    <div class="tab active" onclick="switchTab('executados',this)">📊 Serviços Executados</div>
+    <div class="tab" onclick="switchTab('aprovados',this)">📋 Contratos Aprovados</div>
+  </div>
+  <div class="tab-panel active" id="panel-executados">
+    <div class="kpis" id="kpis-exec"></div>
+    <div class="filters">
+      <span class="flabel">Filtrar:</span>
+      <div id="year-btns-exec"></div>
+      <div class="divv"></div>
+      <select id="sel-tipo-exec" onchange="setTipoExec(this.value)"><option value="Todos">Todos os tipos</option></select>
+      <span class="total-filtro" id="total-filtro-exec"></span>
+    </div>
+    <div class="g3">
+      <div class="card fade-in">
+        <div class="card-header"><div><div class="card-title">Receita por Tipo de Serviço</div><div class="card-sub">Faturamento filtrado</div></div><span class="cbadge" id="badge-tipobar">—</span></div>
+        <div style="position:relative;height:220px"><canvas id="cTipoBar"></canvas></div>
+      </div>
+      <div class="card fade-in">
+        <div class="card-header"><div><div class="card-title">Por Cidade</div><div class="card-sub">Receita total</div></div></div>
+        <div id="cidades-bars"></div><div id="winner-box"></div>
+      </div>
+      <div class="card fade-in">
+        <div class="card-header"><div><div class="card-title">Distribuição %</div><div class="card-sub">Por tipo</div></div></div>
+        <div style="position:relative;height:150px"><canvas id="cPizza"></canvas></div>
+        <div id="pizza-legend" style="margin-top:10px;display:flex;flex-direction:column;gap:6px"></div>
+      </div>
+    </div>
+    <div class="g2">
+      <div class="card fade-in">
+        <div class="card-header"><div><div class="card-title">Faturamento por Ano</div><div class="card-sub">Comparativo anual</div></div></div>
+        <div style="position:relative;height:200px"><canvas id="cAnual"></canvas></div>
+      </div>
+      <div class="card fade-in">
+        <div class="card-header"><div><div class="card-title">Top Clientes</div><div class="card-sub">Por receita acumulada</div></div></div>
+        <div style="position:relative;height:200px"><canvas id="cTopClientes"></canvas></div>
+      </div>
+    </div>
+    <div class="card fade-in">
+      <div class="card-header">
+        <div><div class="card-title">Registro Detalhado — Serviços Executados</div><div class="card-sub">Ordenado por valor</div></div>
+        <span class="cbadge" id="table-count-exec">—</span>
+      </div>
+      <div class="tbl-wrap">
+        <table><thead><tr><th>Ano</th><th>Cliente</th><th>Tipo de Serviço</th><th>Cidade</th><th>Bairro</th><th>Data</th><th>Valor</th><th>Fonte</th><th>NF Nº</th></tr></thead>
+        <tbody id="tbody-exec"></tbody><tfoot><tr id="tfoot-exec"></tr></tfoot></table>
+      </div>
+    </div>
+  </div>
+  <div class="tab-panel" id="panel-aprovados">
+    <div class="kpi-approved-grid" id="kpis-aprov"></div>
+    <div class="filters">
+      <span class="flabel">Categoria:</span>
+      <div id="cat-btns-aprov"></div>
+      <span class="total-filtro" id="total-filtro-aprov"></span>
+    </div>
+    <div class="g3">
+      <div class="card fade-in">
+        <div class="card-header"><div><div class="card-title">Receita por Categoria</div><div class="card-sub">Valor total · 1ª e 2ª parcelas</div></div></div>
+        <div style="position:relative;height:220px"><canvas id="cAprovBar"></canvas></div>
+      </div>
+      <div class="card fade-in">
+        <div class="card-header"><div><div class="card-title">Por Cliente</div><div class="card-sub">Valor contratado</div></div></div>
+        <div style="position:relative;height:200px"><canvas id="cAprovCliente"></canvas></div>
+      </div>
+      <div class="card fade-in">
+        <div class="card-header"><div><div class="card-title">Fluxo de Caixa</div><div class="card-sub">Entrada vs. saldo</div></div></div>
+        <div id="fluxo-rows" style="margin-top:4px"></div>
+      </div>
+    </div>
+    <div class="card fade-in">
+      <div class="card-header">
+        <div><div class="card-title">Contratos Aprovados — Aguardando Execução</div><div class="card-sub">Fonte: Google Drive › Contratos e Propostas › Contrato Aprovado - 2026</div></div>
+        <span class="cbadge" id="table-count-aprov">—</span>
+      </div>
+      <div class="tbl-wrap">
+        <table><thead><tr><th>Nº</th><th>Cliente</th><th>Categoria</th><th>Tipo</th><th>Local</th><th>Contrato</th><th>Dt.</th><th>Valor Total</th><th>Parcelas</th><th>Condição</th><th>Status</th></tr></thead>
+        <tbody id="tbody-aprov"></tbody><tfoot><tr id="tfoot-aprov"></tr></tfoot></table>
+      </div>
+    </div>
+  </div>
+</div>
+<div style="text-align:center;padding:20px;font-size:10px;color:#1E293B;border-top:1px solid var(--bord)">MR Elétrica · CREA 2016129020</div>
+<script>
+const DATA_URL='https://raw.githubusercontent.com/engenheiroaraujobrito-ship-it/mretrica-dashboard/main/data.json';
+const POLL_MS=120000;
+let DATA=null,fAnoExec='Todos',fTipoExec='Todos',fCatAprov='Todos',charts={};
+const CORES={'WallBox SAVE':'#34D399','Elétrica Comercial':'#60A5FA','Elétrica Residencial':'#F59E0B','Elétrica Industrial':'#A78BFA','Elétrica Temporária':'#22D3EE','Manutenção':'#94A3B8','Manutenção Solar':'#FB923C','Aterramento':'#C084FC','Laudo Engenharia':'#F472B6','Diagnóstico Elétrico':'#60A5FA'};
+const CORES_CAT={'WallBox SAVE':'#34D399','Diagnóstico Elétrico':'#60A5FA'};
+const fmt=v=>new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'}).format(v);
+const fmtS=v=>v>=1000?'R$'+(v/1000).toFixed(1)+'k':'R$'+v.toFixed(0);
+function dC(id){if(charts[id]){charts[id].destroy();delete charts[id];}}
+function switchTab(n,el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));document.querySelectorAll('.tab-panel').forEach(p=>p.classList.remove('active'));el.classList.add('active');document.getElementById('panel-'+n).classList.add('active');}
+async function loadData(){
+  try{
+    const r=await fetch(DATA_URL+'?t='+Date.now());
+    if(!r.ok)throw new Error('HTTP '+r.status);
+    DATA=await r.json();
+    document.getElementById('update-time').textContent=new Date().toLocaleString('pt-BR');
+    renderAll();
+  }catch(e){
+    console.warn('Fallback:',e.message);
+    if(!DATA)DATA=FALLBACK;
+    renderAll();
+  }
+}
+function renderAll(){renderExec();renderAprov();}
+function getFilteredExec(){return DATA.servicos_executados.filter(r=>(fAnoExec==='Todos'||r.ano===+fAnoExec)&&(fTipoExec==='Todos'||r.tipo===fTipoExec));}
+function setAnoExec(a,btn){fAnoExec=a;document.querySelectorAll('#year-btns-exec .btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderExec();}
+function setTipoExec(t){fTipoExec=t;renderExec();}
+function renderExec(){
+  const all=DATA.servicos_executados,f=getFilteredExec();
+  const anos=[...new Set(all.map(r=>r.ano))].sort();
+  const yc=document.getElementById('year-btns-exec');
+  yc.innerHTML='<button class="btn'+(fAnoExec==='Todos'?' active':'')+'" onclick="setAnoExec('Todos',this)">Todos os anos</button>'+anos.map(a=>'<button class="btn'+(fAnoExec===String(a)?' active':'')+'" onclick="setAnoExec(''+a+'',this)">'+a+'</button>').join('');
+  const tipos=[...new Set(all.map(r=>r.tipo))].sort();
+  const sel=document.getElementById('sel-tipo-exec');
+  sel.innerHTML='<option value="Todos">Todos os tipos</option>'+tipos.map(t=>'<option value="'+t+'"'+(t===fTipoExec?' selected':'')+'>'+t+'</option>').join('');
+  const tot=f.reduce((s,r)=>s+r.valor,0);
+  const tG=all.reduce((s,r)=>s+r.valor,0),t25=all.filter(r=>r.ano===2025).reduce((s,r)=>s+r.valor,0),t26=all.filter(r=>r.ano===2026).reduce((s,r)=>s+r.valor,0);
+  const tk=f.length?tot/f.length:0;
+  document.getElementById('total-filtro-exec').textContent=f.length+' serviços · '+fmt(tot);
+  document.getElementById('kpis-exec').innerHTML=[
+    {label:'Total Geral',value:fmt(tG),sub:all.length+' serviços executados',cls:'gold',bg:'var(--gold-bg)',bc:'#F59E0B33',vc:'var(--gold)'},
+    {label:'Faturamento 2025',value:fmt(t25),sub:all.filter(r=>r.ano===2025).length+' serviços',cls:'blue',bg:'var(--blue-bg)',bc:'#60A5FA33',vc:'var(--blue)'},
+    {label:'Faturamento 2026',value:fmt(t26),sub:all.filter(r=>r.ano===2026).length+' serviços',cls:'green',bg:'var(--green-bg)',bc:'#34D39933',vc:'var(--green)'},
+    {label:'Ticket Médio',value:fmt(tk),sub:f.length+' serviços filtrados',cls:'purple',bg:'var(--purple-bg)',bc:'#A78BFA33',vc:'var(--purple)'},
+  ].map(k=>'<div class="kpi '+k.cls+' fade-in" style="background:'+k.bg+';border-color:'+k.bc+'"><div class="label">'+k.label+'</div><div class="value" style="color:'+k.vc+'">'+k.value+'</div><div class="sub">'+k.sub+'</div></div>').join('');
+  const pT=Object.entries(f.reduce((a,r)=>{a[r.tipo]=(a[r.tipo]||0)+r.valor;return a},{})).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('badge-tipobar').textContent=f.length+' serviços';
+  dC('tipobar');
+  charts.tipobar=new Chart(document.getElementById('cTipoBar'),{type:'bar',data:{labels:pT.map(x=>x[0]),datasets:[{data:pT.map(x=>x[1]),backgroundColor:pT.map(x=>(CORES[x[0]]||'#94A3B8')+'CC'),borderRadius:5,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+fmt(c.raw)}}},scales:{x:{grid:{color:'#1E293B'},ticks:{callback:v=>fmtS(v),color:'#64748B',font:{size:10}}},y:{grid:{display:false},ticks:{color:'#E2E8F0',font:{size:10}}}}}});
+  const pC=Object.entries(f.reduce((a,r)=>{a[r.cidade]=(a[r.cidade]||0)+r.valor;return a},{})).sort((a,b)=>b[1]-a[1]);
+  const maxC=pC[0]?.[1]||1,cCores=['#60A5FA','#34D399','#F59E0B','#A78BFA','#F87171'];
+  document.getElementById('cidades-bars').innerHTML=pC.map(([c,v],i)=>'<div class="bar-item"><div class="bar-header"><span class="bar-name">'+c+'</span><span class="bar-val">'+fmt(v)+'</span></div><div class="bar-track"><div class="bar-fill" style="width:'+(v/maxC*100).toFixed(0)+'%;background:'+cCores[i%5]+'"></div></div></div>').join('');
+  if(f.length){const m=f.reduce((a,b)=>a.valor>b.valor?a:b);document.getElementById('winner-box').innerHTML='<div class="winner"><div class="wl">🏆 Maior Serviço</div><div class="wn">'+m.cliente+'</div><div class="wv">'+fmt(m.valor)+'</div></div>';}
+  dC('pizza');
+  charts.pizza=new Chart(document.getElementById('cPizza'),{type:'doughnut',data:{labels:pT.map(x=>x[0]),datasets:[{data:pT.map(x=>x[1]),backgroundColor:pT.map(x=>CORES[x[0]]||'#94A3B8'),borderWidth:2,borderColor:'#0D1422',hoverOffset:6}]},options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+fmt(c.raw)+' ('+(c.raw/tot*100).toFixed(1)+'%)'}}}}});
+  document.getElementById('pizza-legend').innerHTML=pT.slice(0,5).map(([tipo,val])=>'<div style="display:flex;align-items:center;gap:7px;font-size:11px"><div style="width:9px;height:9px;border-radius:2px;background:'+(CORES[tipo]||'#94A3B8')+';flex-shrink:0"></div><span style="flex:1;color:#CBD5E1">'+tipo+'</span><span style="color:var(--gold);font-weight:700">'+fmt(val)+'</span></div>').join('');
+  const allAnos=[...new Set(all.map(r=>r.ano))].sort();
+  dC('anual');
+  charts.anual=new Chart(document.getElementById('cAnual'),{type:'bar',data:{labels:allAnos.map(String),datasets:[{label:'Faturamento',data:allAnos.map(a=>all.filter(r=>r.ano===a).reduce((s,r)=>s+r.valor,0)),backgroundColor:['#60A5FA','#34D399','#F59E0B','#A78BFA'].slice(0,allAnos.length),borderRadius:7,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+fmt(c.raw)}}},scales:{y:{grid:{color:'#1E293B'},ticks:{callback:v=>fmtS(v),color:'#64748B'}},x:{grid:{display:false},ticks:{color:'#94A3B8'}}}}});
+  const pCli=Object.entries(all.reduce((a,r)=>{a[r.cliente]=(a[r.cliente]||0)+r.valor;return a},{})).sort((a,b)=>b[1]-a[1]).slice(0,8);
+  dC('topCli');
+  charts.topCli=new Chart(document.getElementById('cTopClientes'),{type:'bar',data:{labels:pCli.map(x=>x[0]),datasets:[{data:pCli.map(x=>x[1]),backgroundColor:'#60A5FA99',borderRadius:5,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+fmt(c.raw)}}},scales:{x:{grid:{color:'#1E293B'},ticks:{callback:v=>fmtS(v),color:'#64748B',font:{size:10}}},y:{grid:{display:false},ticks:{color:'#E2E8F0',font:{size:10}}}}}});
+  document.getElementById('table-count-exec').textContent=f.length+' registros';
+  const sorted=[...f].sort((a,b)=>b.valor-a.valor);
+  document.getElementById('tbody-exec').innerHTML=sorted.map((r,i)=>{const cor=CORES[r.tipo]||'#94A3B8',bg=i%2===0?'#0B0F1A':'';return '<tr style="'+(bg?'background:'+bg:'')+'"><td class="td-muted">'+r.ano+'</td><td class="td-cli">'+r.cliente+'</td><td><span class="badge" style="background:'+cor+'22;color:'+cor+'">'+r.tipo+'</span></td><td class="td-muted">'+r.cidade+'</td><td class="td-muted">'+(r.bairro||'—')+'</td><td class="td-muted">'+r.data+'</td><td class="td-val">'+fmt(r.valor)+'</td><td><span class="badge" style="background:'+(r.fonte==='NFS-e'?'#022C22':'#1E293B')+';color:'+(r.fonte==='NFS-e'?'#34D399':'#94A3B8')+'">'+r.fonte+'</span></td><td class="td-ct">'+(r.nf||'—')+'</td></tr>';}).join('');
+  document.getElementById('tfoot-exec').innerHTML='<td colspan="6" style="text-align:right;color:var(--dim);font-weight:700;font-size:11px">TOTAL ('+f.length+' serviços)</td><td class="td-val" style="font-size:15px">'+fmt(tot)+'</td><td colspan="2"></td>';
+}
+function getFilteredAprov(){return DATA.contratos_aprovados.filter(c=>fCatAprov==='Todos'||c.categoria===fCatAprov);}
+function setCatAprov(cat,btn){fCatAprov=cat;document.querySelectorAll('#cat-btns-aprov .btn').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');renderAprov();}
+function renderAprov(){
+  const all=DATA.contratos_aprovados,f=getFilteredAprov();
+  const cats=[...new Set(all.map(c=>c.categoria))].sort();
+  const cc=document.getElementById('cat-btns-aprov');
+  cc.innerHTML='<button class="btn'+(fCatAprov==='Todos'?' active':'')+'" onclick="setCatAprov('Todos',this)">Todos</button>'+cats.map(cat=>{const isWb=cat==='WallBox SAVE',cls=fCatAprov===cat?(isWb?' active-green':' active'):'';return '<button class="btn'+cls+'" onclick="setCatAprov(''+cat+'',this)">'+(isWb?'🔌':'🔍')+' '+cat+'</button>';}).join('');
+  const tot=f.reduce((s,c)=>s+c.valor_total,0),p1=f.reduce((s,c)=>s+c.p1,0),p2=f.reduce((s,c)=>s+c.p2,0),tk=f.length?tot/f.length:0;
+  const qtWb=f.filter(c=>c.categoria==='WallBox SAVE').length,qtDg=f.filter(c=>c.categoria==='Diagnóstico Elétrico').length;
+  document.getElementById('total-filtro-aprov').textContent=f.length+' contrato'+(f.length!==1?'s':'')+' · '+fmt(tot);
+  document.getElementById('kpis-aprov').innerHTML=[
+    {label:'Total a Receber',value:fmt(tot),sub:f.length+' contratos aprovados',cls:'gold',bg:'var(--gold-bg)',bc:'#F59E0B33',vc:'var(--gold)'},
+    {label:'1ªs Parcelas',value:fmt(p1),sub:'Entrada na assinatura',cls:'green',bg:'var(--green-bg)',bc:'#34D39933',vc:'var(--green)'},
+    {label:'2ªs Parcelas',value:fmt(p2),sub:'Na conclusão / entrega',cls:'blue',bg:'var(--blue-bg)',bc:'#60A5FA33',vc:'var(--blue)'},
+    {label:'Ticket Médio',value:fmt(tk),sub:qtWb+' WallBox · '+qtDg+' Diagn.',cls:'purple',bg:'var(--purple-bg)',bc:'#A78BFA33',vc:'var(--purple)'},
+  ].map(k=>'<div class="kpi '+k.cls+' fade-in" style="background:'+k.bg+';border-color:'+k.bc+'"><div class="label">'+k.label+'</div><div class="value" style="color:'+k.vc+'">'+k.value+'</div><div class="sub">'+k.sub+'</div></div>').join('');
+  const catData=cats.map(cat=>({cat,tot:f.filter(c=>c.categoria===cat).reduce((s,c)=>s+c.valor_total,0),p1:f.filter(c=>c.categoria===cat).reduce((s,c)=>s+c.p1,0),p2:f.filter(c=>c.categoria===cat).reduce((s,c)=>s+c.p2,0)}));
+  dC('aprovBar');
+  charts.aprovBar=new Chart(document.getElementById('cAprovBar'),{type:'bar',data:{labels:catData.map(c=>(c.cat==='WallBox SAVE'?'🔌 ':'🔍 ')+c.cat),datasets:[{label:'1ª Parcela',data:catData.map(c=>c.p1),backgroundColor:'#34D39999',borderRadius:5},{label:'2ª Parcela',data:catData.map(c=>c.p2),backgroundColor:'#60A5FA99',borderRadius:5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#94A3B8',font:{size:10},boxWidth:10,padding:12}},tooltip:{callbacks:{label:c=>' '+fmt(c.raw)}}},scales:{x:{stacked:true,grid:{display:false},ticks:{color:'#94A3B8',font:{size:10}}},y:{stacked:true,grid:{color:'#1E293B'},ticks:{callback:v=>fmtS(v),color:'#64748B'}}}}});
+  const cliS=[...f].sort((a,b)=>b.valor_total-a.valor_total);
+  dC('aprovCli');
+  charts.aprovCli=new Chart(document.getElementById('cAprovCliente'),{type:'bar',data:{labels:cliS.map(c=>c.cliente),datasets:[{data:cliS.map(c=>c.valor_total),backgroundColor:cliS.map(c=>(CORES_CAT[c.categoria]||'#94A3B8')+'99'),borderRadius:5,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+fmt(c.raw)}}},scales:{x:{grid:{color:'#1E293B'},ticks:{callback:v=>fmtS(v),color:'#64748B',font:{size:10}}},y:{grid:{display:false},ticks:{color:'#E2E8F0',font:{size:9}}}}}});
+  const pct1=tot?(p1/tot*100).toFixed(1):0,pct2=tot?(p2/tot*100).toFixed(1):0;
+  document.getElementById('fluxo-rows').innerHTML=[
+    {fase:'1ª Parcela',moment:'Na assinatura do contrato',val:p1,pct:pct1,bg:'var(--green-bg)',bc:'#34D39944',vc:'var(--green)'},
+    {fase:'2ª Parcela',moment:'Na conclusão / entrega do relatório',val:p2,pct:pct2,bg:'var(--blue-bg)',bc:'#60A5FA44',vc:'var(--blue)'},
+    {fase:'TOTAL',moment:'Soma de todos os contratos',val:tot,pct:'100',bg:'#1C1600',bc:'#F59E0B44',vc:'var(--gold)'},
+  ].map(r=>'<div class="fluxo-row" style="background:'+r.bg+';border-color:'+r.bc+'"><div><div class="fluxo-fase" style="color:'+r.vc+'">'+r.fase+'</div><div class="fluxo-moment">'+r.moment+'</div></div><div style="text-align:right"><div class="fluxo-val" style="color:'+r.vc+'">'+fmt(r.val)+'</div><div class="fluxo-pct" style="color:'+r.vc+'">'+r.pct+'%</div></div></div>').join('');
+  document.getElementById('table-count-aprov').textContent=f.length+' contratos';
+  document.getElementById('tbody-aprov').innerHTML=f.map((c,i)=>{const isWb=c.categoria==='WallBox SAVE',bg=i%2===0?'#0B0F1A':'';const parc=c.p2>0?'<div class="parcel-wrap"><div class="parcel-row"><span class="parcel-lbl">1ª</span><span class="parcel-val">'+fmt(c.p1)+'</span></div><div class="parcel-row"><span class="parcel-lbl">2ª</span><span class="parcel-val">'+fmt(c.p2)+'</span></div></div>':'<div class="parcel-wrap"><div class="parcel-row"><span class="parcel-lbl">Ún.</span><span class="parcel-val">'+fmt(c.p1)+'</span></div></div>';return '<tr style="'+(bg?'background:'+bg:'')+'"><td class="td-muted">'+c.id+'</td><td class="td-cli">'+c.cliente+'</td><td><span class="ct-tag '+(isWb?'wallbox':'diag')+'">'+(isWb?'🔌':'🔍')+' '+c.categoria+'</span></td><td class="td-muted" style="font-size:11px">'+c.tipo+'</td><td class="td-muted" style="font-size:11px">'+c.endereco+', '+c.bairro+' – '+c.cidade+'</td><td class="td-ct">'+c.contrato+'</td><td class="td-muted">'+c.dt_contrato+'</td><td class="td-val">'+fmt(c.valor_total)+'</td><td>'+parc+'</td><td class="td-muted" style="font-size:11px;max-width:140px">'+c.cond_pagto+'</td><td><span class="status-tag">'+c.status+'</span></td></tr>';}).join('');
+  document.getElementById('tfoot-aprov').innerHTML='<td colspan="7" style="text-align:right;color:var(--dim);font-weight:700;font-size:11px">TOTAL ('+f.length+' contratos)</td><td class="td-val" style="font-size:15px">'+fmt(tot)+'</td><td colspan="3" style="color:#34D399;font-size:11px;font-weight:700">1ªs: '+fmt(p1)+' | 2ªs: '+fmt(p2)+'</td>';
+}
+const FALLBACK={"updated_at":"2026-05-30","servicos_executados":[{ano:2025,cliente:"Óticas Dinis",tipo:"Elétrica Comercial",cidade:"SJC",bairro:"",data:"04/05/2025",valor:450,fonte:"NFS-e",nf:""},{ano:2025,cliente:"Do Valle",tipo:"Aterramento",cidade:"SJC",bairro:"",data:"10/05/2025",valor:429.59,fonte:"NFS-e",nf:""},{ano:2025,cliente:"Elídia - Santa Lúcia",tipo:"Elétrica Residencial",cidade:"SJC",bairro:"Santa Lúcia",data:"Abr/2025",valor:2360,fonte:"Proposta",nf:""},{ano:2025,cliente:"Romilda Vila Ema",tipo:"Elétrica Residencial",cidade:"SJC",bairro:"Vila Ema",data:"Mai/2025",valor:880,fonte:"Proposta",nf:""},{ano:2025,cliente:"Mercado São Bento",tipo:"Manutenção",cidade:"SJC",bairro:"",data:"Mai/2025",valor:150,fonte:"Informado",nf:""},{ano:2025,cliente:"Leandro Laboratório",tipo:"Manutenção",cidade:"SJC",bairro:"",data:"Jun/2025",valor:550,fonte:"Proposta",nf:""},{ano:2025,cliente:"Salles Corretora",tipo:"Manutenção",cidade:"SJC",bairro:"",data:"Jun/2025",valor:300,fonte:"Proposta",nf:""},{ano:2025,cliente:"Do Valle",tipo:"Elétrica Industrial",cidade:"SJC",bairro:"",data:"28/06/2025",valor:2576.9,fonte:"NFS-e",nf:""},{ano:2025,cliente:"Faculdade Inspirar",tipo:"Elétrica Comercial",cidade:"SJC",bairro:"",data:"Jul/2025",valor:6400,fonte:"Proposta",nf:""},{ano:2025,cliente:"NAVE Veterinário",tipo:"Manutenção",cidade:"Jacareí",bairro:"",data:"30/09/2025",valor:750,fonte:"NFS-e",nf:""},{ano:2025,cliente:"Velox Solar",tipo:"Manutenção Solar",cidade:"SJC",bairro:"",data:"04/11/2025",valor:304,fonte:"NFS-e",nf:"20"},{ano:2025,cliente:"Velox Solar",tipo:"Manutenção Solar",cidade:"SJC",bairro:"",data:"13/11/2025",valor:575.97,fonte:"NFS-e",nf:"21"},{ano:2026,cliente:"Restaurante Singular",tipo:"Manutenção",cidade:"SJC",bairro:"",data:"Dez/2025",valor:350,fonte:"Proposta",nf:""},{ano:2026,cliente:"Palco CenterVale",tipo:"Elétrica Temporária",cidade:"SJC",bairro:"",data:"Fev/2026",valor:350,fonte:"ART",nf:""},{ano:2026,cliente:"Putin/Ediana",tipo:"Elétrica Comercial",cidade:"SJC",bairro:"Putim",data:"24/04/2026",valor:1250,fonte:"NFS-e",nf:"24"},{ano:2026,cliente:"Marcos Bueno",tipo:"WallBox SAVE",cidade:"Jacareí",bairro:"Vila Branca",data:"20/05/2026",valor:1250,fonte:"NFS-e",nf:"27"},{ano:2026,cliente:"Odair",tipo:"WallBox SAVE",cidade:"Jacareí",bairro:"",data:"12/05/2026",valor:750,fonte:"NFS-e",nf:"26"},{ano:2026,cliente:"Paulo Elias",tipo:"WallBox SAVE",cidade:"Jacareí",bairro:"Mirante do Vale",data:"12/05/2026",valor:1457.68,fonte:"NFS-e",nf:"25"},{ano:2026,cliente:"Jorge Pimentel",tipo:"WallBox SAVE",cidade:"SJC",bairro:"Jardim Esplanada",data:"25/05/2026",valor:1250,fonte:"NFS-e",nf:"28"},{ano:2026,cliente:"Adão Neto",tipo:"WallBox SAVE",cidade:"SJC",bairro:"Parque dos Ipês",data:"30/05/2026",valor:1165.72,fonte:"NFS-e",nf:"29"},{ano:2026,cliente:"Obrapar/Belloninho",tipo:"Laudo Engenharia",cidade:"SJC",bairro:"Jardim Alvorada",data:"14/05/2026",valor:1230,fonte:"ART",nf:""}],"contratos_aprovados":[{id:1,cliente:"Rodrigo",categoria:"WallBox SAVE",tipo:"Instalação WallBox SAVE – Modo 3",cidade:"SJC",bairro:"Bosque dos Eucaliptos",endereco:"Rua Viçosa, 342",contrato:"PT-SAVE-4599/2026",dt_contrato:"30/05/2026",ano:2026,valor_total:565,p1:565,p2:0,cond_pagto:"Parcela única na conclusão",status:"Aguardando Agenda",obs:""},{id:2,cliente:"Carlos Roberto",categoria:"WallBox SAVE",tipo:"Instalação WallBox SAVE – Modo 3",cidade:"SJC",bairro:"Vila Industrial",endereco:"Rua Misael Marçal, 265",contrato:"PT-SAVE-0584/2026",dt_contrato:"16/05/2026",ano:2026,valor_total:1030,p1:515,p2:515,cond_pagto:"50% + 50%",status:"Aguardando Agenda",obs:""},{id:3,cliente:"Edson Fernandes",categoria:"WallBox SAVE",tipo:"Instalação WallBox SAVE – Modo 3",cidade:"SJC",bairro:"Portal dos Pássaros",endereco:"Rua Água Dourada, 83",contrato:"CT-SAVE-8095/2026",dt_contrato:"17/05/2026",ano:2026,valor_total:1160,p1:580,p2:580,cond_pagto:"50% + 50%",status:"Aguardando Agenda",obs:""},{id:4,cliente:"Cond. Ideale – Torre A",categoria:"Diagnóstico Elétrico",tipo:"Diagnóstico – Fase 1/3",cidade:"SJC",bairro:"Vila Adyana",endereco:"R. Afonso Cesar de Siqueira, 106",contrato:"CT-DIAG-001/2026",dt_contrato:"Mai/2026",ano:2026,valor_total:1250,p1:625,p2:625,cond_pagto:"50% + 50%",status:"Aguardando Agenda",obs:""},{id:5,cliente:"Cond. Ideale – Torre B",categoria:"Diagnóstico Elétrico",tipo:"Diagnóstico – Fase 2/3",cidade:"SJC",bairro:"Vila Adyana",endereco:"R. Afonso Cesar de Siqueira, 106",contrato:"CT-DIAG-002/2026",dt_contrato:"11/05/2026",ano:2026,valor_total:1250,p1:625,p2:625,cond_pagto:"50% + 50%",status:"Aguardando Agenda",obs:""},{id:6,cliente:"Cond. Ideale – Torre C",categoria:"Diagnóstico Elétrico",tipo:"Diagnóstico – Fase 3/3",cidade:"SJC",bairro:"Vila Adyana",endereco:"R. Afonso Cesar de Siqueira, 106",contrato:"CT-DIAG-003/2026",dt_contrato:"Mai/2026",ano:2026,valor_total:1250,p1:625,p2:625,cond_pagto:"50% + 50%",status:"Aguardando Agenda",obs:""}]};
+loadData();
+if(location.protocol!=='file:')setInterval(loadData,POLL_MS);
+</script>
+</body>
 </html>
 
 <!DOCTYPE html>
