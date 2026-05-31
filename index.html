@@ -246,6 +246,14 @@ function renderExec(){
   sel.innerHTML='<option value="Todos">Todos os tipos</option>'+tipos.map(t=>'<option value="'+t+'"'+(t===fTipoExec?' selected':'')+'>'+t+'</option>').join('');
   const tot=f.reduce((s,r)=>s+r.valor,0);
   const tG=all.reduce((s,r)=>s+r.valor,0),t25=all.filter(r=>r.ano===2025).reduce((s,r)=>s+r.valor,0),t26=all.filter(r=>r.ano===2026).reduce((s,r)=>s+r.valor,0);
+  const meses26=[...new Set(all.filter(r=>r.ano===2026).map(r=>r.data.slice(5,7)))];
+  const t25mesmo=all.filter(r=>r.ano===2025&&meses26.includes(r.data.slice(5,7))).reduce((s,r)=>s+r.valor,0);
+  const yoy=t25mesmo>0?((t26-t25mesmo)/t25mesmo*100):null;
+  const yoyStr=yoy===null?'—':(yoy>=0?'▲ +':'▼ ')+Math.abs(yoy).toFixed(1)+'%';
+  const yoyCls=yoy===null?'muted':yoy>=0?'green':'red';
+  const nomesMes=['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const ultimoMes26=nomesMes[[...meses26].sort().slice(-1)[0]-1]||'?';
+  const yoySub=yoy===null?'dados insuficientes':'2026 vs 2025 — mesmo período (até '+ultimoMes26+')';
   const tk=f.length?tot/f.length:0;
   document.getElementById('total-filtro-exec').textContent=f.length+' serviços · '+fmt(tot);
   document.getElementById('kpis-exec').innerHTML=[
@@ -253,6 +261,7 @@ function renderExec(){
     {label:'Faturamento 2025',value:fmt(t25),sub:all.filter(r=>r.ano===2025).length+' serviços',cls:'blue',bg:'var(--blue-bg)',bc:'#60A5FA33',vc:'var(--blue)'},
     {label:'Faturamento 2026',value:fmt(t26),sub:all.filter(r=>r.ano===2026).length+' serviços',cls:'green',bg:'var(--green-bg)',bc:'#34D39933',vc:'var(--green)'},
     {label:'Ticket Médio',value:fmt(tk),sub:f.length+' serviços filtrados',cls:'purple',bg:'var(--purple-bg)',bc:'#A78BFA33',vc:'var(--purple)'},
+    {label:'Crescimento YoY',value:yoyStr,sub:yoySub,cls:yoyCls,bg:yoy===null?'var(--card)':yoy>=0?'var(--green-bg)':'var(--red-bg)',bc:yoy===null?'#334155':yoy>=0?'#34D39933':'#F8717133',vc:yoy===null?'var(--muted)':yoy>=0?'var(--green)':'var(--red)'},
   ].map(k=>'<div class="kpi '+k.cls+' fade-in" style="background:'+k.bg+';border-color:'+k.bc+'"><div class="label">'+k.label+'</div><div class="value" style="color:'+k.vc+'">'+k.value+'</div><div class="sub">'+k.sub+'</div></div>').join('');
   const pT=Object.entries(f.reduce((a,r)=>{a[r.tipo]=(a[r.tipo]||0)+r.valor;return a},{})).sort((a,b)=>b[1]-a[1]);
   document.getElementById('badge-tipobar').textContent=f.length+' serviços';
