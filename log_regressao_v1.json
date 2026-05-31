@@ -1,0 +1,35 @@
+{
+  "_log_info": {
+    "descricao": "BACKUP regressao — data.json ANTES padronizacao datas para YYYY-MM",
+    "data_backup": "2026-05-31",
+    "commit_antes": "16ccd44",
+    "commit_depois": "358d0e6",
+    "como_reverter": "Copiar _data_original e salvar como data.json via /upload/main"
+  },
+  "_data_original": {
+    "updated_at": "2026-05-30T23:00:00",
+    "servicos_executados": [
+      {"ano":2025,"cliente":"Oticas Dinis","data":"04/05/2025","valor":450.00},
+      {"ano":2025,"cliente":"Do Valle","data":"10/05/2025","valor":429.59},
+      {"ano":2025,"cliente":"Eleida - Santa Lucia","data":"Abr/2025","valor":2360.00},
+      {"ano":2025,"cliente":"Romilda Vila Ema","data":"Mai/2025","valor":880.00},
+      {"ano":2025,"cliente":"Mercado Sao Bento","data":"Mai/2025","valor":150.00},
+      {"ano":2025,"cliente":"Leandro Laboratorio","data":"Jun/2025","valor":550.00},
+      {"ano":2025,"cliente":"Salles Corretora","data":"Jun/2025","valor":300.00},
+      {"ano":2025,"cliente":"Do Valle","data":"28/06/2025","valor":2576.90},
+      {"ano":2025,"cliente":"Faculdade Inspirar","data":"Jul/2025","valor":6400.00},
+      {"ano":2025,"cliente":"NAVE Veterinario","data":"30/09/2025","valor":750.00},
+      {"ano":2025,"cliente":"Velox Solar","data":"04/11/2025","valor":304.00},
+      {"ano":2025,"cliente":"Velox Solar","data":"13/11/2025","valor":575.97},
+      {"ano":2026,"cliente":"Restaurante Singular","data":"Dez/2025","valor":350.00},
+      {"ano":2026,"cliente":"Palco CenterVale","data":"Fev/2026","valor":350.00},
+      {"ano":2026,"cliente":"Putin/Ediana","data":"24/04/2026","valor":1250.00},
+      {"ano":2026,"cliente":"Marcos Bueno","data":"20/05/2026","valor":1250.00},
+      {"ano":2026,"cliente":"Odair","data":"12/05/2026","valor":750.00},
+      {"ano":2026,"cliente":"Paulo Elias","data":"12/05/2026","valor":1457.68},
+      {"ano":2026,"cliente":"Jorge Pimentel","data":"25/05/2026","valor":1250.00},
+      {"ano":2026,"cliente":"Adao Neto","data":"30/05/2026","valor":1165.72},
+      {"ano":2026,"cliente":"Obrapar/Belloninho","data":"14/05/2026","valor":1230.00}
+    ]
+  }
+}
