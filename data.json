@@ -1,5 +1,5 @@
-{
-  "updated_at": "2026-06-04T00:00:00",
+—{
+  "updated_at": "2026-06-04T12:00:00",
   "_log": "v2 — datas padronizadas para YYYY-MM em 31/05/2026. Backup em LOG_REGRESSAO_data_json_v1_antes_padronizacao_datas.json no Drive.",
   "servicos_executados": [
     {"ano":2025,"cliente":"Óticas Dinis","tipo":"Elétrica Comercial","cidade":"SJC","bairro":"Jd. São Dimas","data":"2025-05","valor":450,"fonte":"NFS-e","nf":""},
@@ -27,6 +27,7 @@
     {"ano":2026,"cliente":"Carlos Roberto","tipo":"WallBox SAVE","cidade":"SJC","bairro":"Vila Industrial","data":"2026-06","valor":1030,"fonte":"Proposta","nf":""}
   ],
   "contratos_aprovados": [
+    {"id":7,"cliente":"Breno Leite","categoria":"WallBox SAVE","tipo":"Instalação WallBox SAVE – Modo 3","cidade":"SJC","bairro":"Urbanova","endereco":"Av. Josephina Segata, 241","contrato":"Proposta Breno/2026","dt_contrato":"2026-04","ano":2026,"valor_total":1350,"p1":675,"p2":675,"cond_pagto":"50% aceite + 50% conclusão","status":"Aguardando Agenda","obs":"BYD Song Pro | 7,5 kW | TN-S | DR Tipo B 40A/30mA | DPS 175V | Aterramento haste 2,4m | Materiais cliente"},
     {"id":1,"cliente":"Rodrigo","categoria":"WallBox SAVE","tipo":"Instalação WallBox SAVE – Modo 3","cidade":"SJC","bairro":"Bosque dos Eucaliptos","endereco":"Rua Viçosa, 342","contrato":"PT-SAVE-4599/2026","dt_contrato":"2026-05","ano":2026,"valor_total":565,"p1":565,"p2":0,"cond_pagto":"Parcela única na conclusão","status":"Aguardando Agenda","obs":"Geely EX2 | Wallbox Intelbras existente | 4m percurso | DR Tipo A | DPS Classe II"},
     {"id":3,"cliente":"Cond. Ideale – Torre A","categoria":"Diagnóstico Elétrico","tipo":"Diagnóstico Elétrico – Fase 1/3","cidade":"SJC","bairro":"Vila Adyana","endereco":"Rua Afonso Cesar de Siqueira, 106","contrato":"CT-DIAG-001/2026","dt_contrato":"2026-05","ano":2026,"valor_total":1250,"p1":625,"p2":625,"cond_pagto":"50% assinatura + 50% entrega relatório","status":"Aguardando Agenda","obs":"Fase 1/3 | 150mm² entrada, fusível 315A | Analisador Classe A IEC 61000-4-30 | 7 dias medição | Inclui ART"},
     {"id":4,"cliente":"Cond. Ideale – Torre B","categoria":"Diagnóstico Elétrico","tipo":"Diagnóstico Elétrico – Fase 2/3","cidade":"SJC","bairro":"Vila Adyana","endereco":"Rua Afonso Cesar de Siqueira, 106","contrato":"CT-DIAG-002/2026","dt_contrato":"2026-05","ano":2026,"valor_total":1250,"p1":625,"p2":625,"cond_pagto":"50% assinatura + 50% entrega relatório","status":"Aguardando Agenda","obs":"Fase 2/3 | 120mm² entrada, fusível 250A | Analisador Classe A IEC 61000-4-30 | 7 dias medição | Inclui ART"},
