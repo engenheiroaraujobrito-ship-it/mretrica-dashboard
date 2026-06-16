@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-16T16:15:37",
-  "_log": "2026-06-16 — Despesa lançada: Cartão Riachuelo R$ 1.544,13 PIX 05/06/2026",
+  "updated_at": "2026-06-16T16:30:00",
+  "_log": "2026-06-16 — +7 despesas lançadas em lote (Plano Claro, INSS, MEI, Internet, Água, Casas Bahia, Atacadão). Total 2026: R$ 4.061,15",
   "servicos_executados": [
     {
       "ano": 2025,
@@ -397,6 +397,83 @@
       "tipo": "Fixa",
       "forma_pagto": "PIX",
       "valor": 1544.13,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "10/06/2026",
+      "descricao": "Plano Claro",
+      "tipo": "Fixa",
+      "forma_pagto": "PIX",
+      "valor": 36.9,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "03/06/2026",
+      "descricao": "Empréstimo INSS",
+      "tipo": "Fixa",
+      "forma_pagto": "PIX",
+      "valor": 175,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-05",
+      "data": "31/05/2026",
+      "descricao": "Cartão MEI",
+      "tipo": "Fixa",
+      "forma_pagto": "PIX",
+      "valor": 672.71,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "05/06/2026",
+      "descricao": "Internet Casa",
+      "tipo": "Fixa",
+      "forma_pagto": "PIX",
+      "valor": 109.99,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "10/06/2026",
+      "descricao": "Conta de Água",
+      "tipo": "Fixa",
+      "forma_pagto": "PIX",
+      "valor": 75.11,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "05/06/2026",
+      "descricao": "Cartão Casas Bahia",
+      "tipo": "Fixa",
+      "forma_pagto": "Boleto",
+      "valor": 610,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "15/06/2026",
+      "descricao": "Cartão Atacadão",
+      "tipo": "Fixa",
+      "forma_pagto": "PIX",
+      "valor": 837.31,
       "pago": true,
       "obs": ""
     }
