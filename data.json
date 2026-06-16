@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-16T16:30:00",
-  "_log": "2026-06-16 — +7 despesas lançadas em lote (Plano Claro, INSS, MEI, Internet, Água, Casas Bahia, Atacadão). Total 2026: R$ 4.061,15",
+  "updated_at": "2026-06-16T16:35:00",
+  "_log": "2026-06-16 — Despesa variável: Uber R$ 250,97 Cartão 16/06/2026. Total 2026: R$ 4.312,12",
   "servicos_executados": [
     {
       "ano": 2025,
@@ -474,6 +474,17 @@
       "tipo": "Fixa",
       "forma_pagto": "PIX",
       "valor": 837.31,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "16/06/2026",
+      "descricao": "Uber",
+      "tipo": "Variável",
+      "forma_pagto": "Cartão",
+      "valor": 250.97,
       "pago": true,
       "obs": ""
     }
