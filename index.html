@@ -177,4 +177,65 @@ function getF(){return DD.servicos_executados.filter(r=>(fAno==='Todos'||r.ano==
 function setAno(a,btn){fAno=a;document.querySelectorAll('#year-btns .btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderExec();}
 function setTipo(t){fTipo=t;renderExec();}
 function setCat(c,btn){fCat=c;document.querySelectorAll('#cat-btns .btn').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderAprov();}
-function renderExec(){const all=DD.servicos_executados,f=getF(),anos=[...new Set(all.map(r=>r.ano))].sort();document.getElementById('year-btns').innerHTML='<button class="btn'+(fAno==='Todos'?' active':'')+'" onclick="setAno(\'Todos\',this)">Todos</button>'+anos.map(a=>'<button class="btn'+(fAno==a?' active':'')+'" onclick="setAno('+a+',this)">'+a+'</button>').join('');document.getElementById('sel-tipo').innerHTML='<option value="Todos">Todos os tipos</option>'+[...new Set(all.map(r=>r.tipo))].sort().map(t=>'<option value="'+t+'"'+(t===fTipo?' selected':'')+'>'+t+'</option>').join('');const tot=f.reduce((s,r)=>s+r.valor,0),tG=all.reduce((s,r)=>s+r.valor,0),t25=all.filter(r=>r.ano===2025).reduce((s,r)=>s+r.valor,0),t26=all.filter(r=>r.ano===2026).reduce((s,r)=>s+r.valor,0);document.getElementById('total-filtro').textContent=f.length+' serviços · '+fmt(tot);document.getElementById('kpis-exec').innerHTML=[{l:'Total Geral',v:fmt(tG),s:all
+function renderExec(){const all=DD.servicos_executados,f=getF(),anos=[...new Set(all.map(r=>r.ano))].sort();document.getElementById('year-btns').innerHTML='<button class="btn'+(fAno==='Todos'?' active':'')+'" onclick="setAno(\'Todos\',this)">Todos</button>'+anos.map(a=>'<button class="btn'+(fAno==a?' active':'')+'" onclick="setAno('+a+',this)">'+a+'</button>').join('');document.getElementById('sel-tipo').innerHTML='<option value="Todos">Todos os tipos</option>'+[...new Set(all.map(r=>r.tipo))].sort().map(t=>'<option value="'+t+'"'+(t===fTipo?' selected':'')+'>'+t+'</option>').join('');const tot=f.reduce((s,r)=>s+r.valor,0),tG=all.reduce((s,r)=>s+r.valor,0),t25=all.filter(r=>r.ano===2025).reduce((s,r)=>s+r.valor,0),t26=all.filter(r=>r.ano===2026).reduce((s,r)=>s+r.valor,0);document.getElementById('total-filtro').textContent=f.length+' serviços · '+fmt(tot);document.getElementById('kpis-exec').innerHTML=[{l:'Total Geral',v:fmt(tG),s:all.length+' serviços executados',c:'gold',bg:'var(--gold-bg)',bc:'#F59E0B33',vc:'var(--gold)'},{l:'2025',v:fmt(t25),s:all.filter(r=>r.ano===2025).length+' serviços',c:'blue',bg:'var(--blue-bg)',bc:'#60A5FA33',vc:'var(--blue)'},{l:'2026',v:fmt(t26),s:all.filter(r=>r.ano===2026).length+' serviços',c:'green',bg:'var(--green-bg)',bc:'#34D39933',vc:'var(--green)'},{l:'Filtrado',v:fmt(tot),s:f.length+' serviços',c:'purple',bg:'var(--purple-bg)',bc:'#A78BFA33',vc:'var(--purple)'}].map(k=>'<div class="kpi '+k.c+' fade-in" style="background:'+k.bg+';border-color:'+k.bc+'"><div class="label">'+k.l+'</div><div class="value" style="color:'+k.vc+'">'+k.v+'</div><div class="sub">'+k.s+'</div></div>').join('');
+const cids=Object.entries(f.reduce((a,r)=>{a[r.cidade]=(a[r.cidade]||0)+r.valor;return a},{})).sort((a,b)=>b[1]-a[1]);
+const maxCid=cids[0]?cids[0][1]:1;
+document.getElementById('cid-bars').innerHTML=cids.slice(0,5).map(([c,v])=>'<div class="bar-item"><div class="bar-header"><span class="bar-name">'+c+'</span><span class="bar-val">'+fmt(v)+'</span></div><div class="bar-track"><div class="bar-fill" style="width:'+(v/maxCid*100).toFixed(1)+'%;background:linear-gradient(90deg,#F59E0B,#FBBF24)"></div></div></div>').join('');
+const winner=cids[0];
+document.getElementById('winner-box').innerHTML=winner?'<div class="winner"><div class="wl">🏆 DESTAQUE</div><div class="wn">'+winner[0]+'</div><div class="wv">'+fmt(winner[1])+'</div></div>':'';
+const byTipo=Object.entries(f.reduce((a,r)=>{a[r.tipo]=(a[r.tipo]||0)+r.valor;return a},{})).sort((a,b)=>b[1]-a[1]);
+document.getElementById('badge-tb').textContent=f.length+' serviços';
+dC('cTB');CH.cTB=new Chart(document.getElementById('cTB'),{type:'bar',data:{labels:byTipo.map(x=>x[0]),datasets:[{data:byTipo.map(x=>x[1]),backgroundColor:byTipo.map(x=>CORES[x[0]]||'#94A3B8'),borderRadius:5,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+fmt(c.raw)}}},scales:{x:{grid:{color:'#1E293B'},ticks:{callback:v=>fmtS(v),color:'#64748B',font:{size:10}}},y:{grid:{display:false},ticks:{color:'#E2E8F0',font:{size:10}}}}}});
+const pzData=byTipo.slice(0,6);
+dC('cPz');CH.cPz=new Chart(document.getElementById('cPz'),{type:'doughnut',data:{labels:pzData.map(x=>x[0]),datasets:[{data:pzData.map(x=>x[1]),backgroundColor:pzData.map(x=>CORES[x[0]]||'#94A3B8'),borderWidth:2,borderColor:'#0D1422'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+fmt(c.raw)}}}}});
+document.getElementById('pz-leg').innerHTML=pzData.map(x=>'<div style="display:flex;align-items:center;gap:6px;font-size:11px"><span style="width:10px;height:10px;border-radius:2px;background:'+(CORES[x[0]]||'#94A3B8')+';flex-shrink:0"></span><span style="color:#94A3B8">'+x[0]+'</span><span style="color:var(--gold);font-weight:700;margin-left:auto">'+fmt(x[1])+'</span></div>').join('');
+const anosList=[...new Set(all.map(r=>r.ano))].sort();
+dC('cAn');CH.cAn=new Chart(document.getElementById('cAn'),{type:'bar',data:{labels:anosList,datasets:[{data:anosList.map(a=>all.filter(r=>r.ano===a).reduce((s,r)=>s+r.valor,0)),backgroundColor:anosList.map((a,i)=>i===anosList.length-1?'#F59E0B99':'#60A5FA99'),borderRadius:6,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+fmt(c.raw)}}},scales:{x:{grid:{display:false},ticks:{color:'#94A3B8',font:{size:10}}},y:{grid:{color:'#1E293B'},ticks:{callback:v=>fmtS(v),color:'#64748B',font:{size:10}}}}}});
+const topCli=Object.entries(f.reduce((a,r)=>{a[r.cliente]=(a[r.cliente]||0)+r.valor;return a},{})).sort((a,b)=>b[1]-a[1]).slice(0,8);
+dC('cTC');CH.cTC=new Chart(document.getElementById('cTC'),{type:'bar',data:{labels:topCli.map(x=>x[0]),datasets:[{data:topCli.map(x=>x[1]),backgroundColor:'#A78BFA99',borderRadius:5,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+fmt(c.raw)}}},scales:{x:{grid:{color:'#1E293B'},ticks:{callback:v=>fmtS(v),color:'#64748B',font:{size:10}}},y:{grid:{display:false},ticks:{color:'#E2E8F0',font:{size:10}}}}}});
+document.getElementById('tbl-cnt').textContent=f.length+' registros';
+const sorted=[...f].sort((a,b)=>b.valor-a.valor);
+document.getElementById('tbody-exec').innerHTML=sorted.map((r,i)=>'<tr style="'+(i%2===0?'background:#0B0F1A':'')+'">'+'<td class="td-muted">'+r.ano+'</td>'+'<td class="td-cli">'+r.cliente+'</td>'+'<td class="td-ct">'+r.tipo+'</td>'+'<td class="td-muted">'+r.cidade+'</td>'+'<td class="td-muted">'+(r.bairro||'—')+'</td>'+'<td class="td-muted">'+(r.data||'—')+'</td>'+'<td class="td-val">'+fmt(r.valor)+'</td>'+'<td class="td-muted">'+(r.fonte||'—')+'</td>'+'<td class="td-muted">'+(r.nf||'—')+'</td>'+'</tr>').join('');
+document.getElementById('tfoot-exec').innerHTML=f.length?'<td colspan="6" style="text-align:right;color:var(--dim);font-weight:700;font-size:11px;padding-left:20px">TOTAL ('+f.length+')</td><td style="color:var(--gold);font-weight:900;font-size:15px;padding:10px 12px">'+fmt(tot)+'</td><td colspan="2"></td>':'';}
+function renderAprov(){
+const all=DD.contratos_aprovados||[],f=fCat==='Todos'?all:all.filter(c=>c.categoria===fCat);
+const cats=[...new Set(all.map(c=>c.categoria))].sort();
+document.getElementById('cat-btns').innerHTML='<button class="btn'+(fCat==='Todos'?' active':'')+'" onclick="setCat('Todos',this)">Todos</button>'+cats.map(c=>'<button class="btn'+(fCat===c?' active':'')+'" onclick="setCat(''+c+'',this)">'+c+'</button>').join('');
+const totAll=all.reduce((s,c)=>s+c.valor_total,0),totF=f.reduce((s,c)=>s+c.valor_total,0);
+document.getElementById('total-filtro-aprov').textContent=f.length+' contratos · '+fmt(totF);
+document.getElementById('kpis-aprov').innerHTML=[
+{l:'Total em Carteira',v:fmt(totAll),s:all.length+' contratos',c:'gold',bg:'var(--gold-bg)',bc:'#F59E0B33',vc:'var(--gold)'},
+{l:'WallBox SAVE',v:fmt(all.filter(c=>c.categoria==='WallBox SAVE').reduce((s,c)=>s+c.valor_total,0)),s:all.filter(c=>c.categoria==='WallBox SAVE').length+' contratos',c:'green',bg:'var(--green-bg)',bc:'#34D39933',vc:'var(--green)'},
+{l:'Diagnóstico',v:fmt(all.filter(c=>c.categoria==='Diagnóstico Elétrico').reduce((s,c)=>s+c.valor_total,0)),s:all.filter(c=>c.categoria==='Diagnóstico Elétrico').length+' contratos',c:'blue',bg:'var(--blue-bg)',bc:'#60A5FA33',vc:'var(--blue)'},
+{l:'Filtrado',v:fmt(totF),s:f.length+' contratos',c:'purple',bg:'var(--purple-bg)',bc:'#A78BFA33',vc:'var(--purple)'}
+].map(k=>'<div class="kpi '+k.c+' fade-in" style="background:'+k.bg+';border-color:'+k.bc+'"><div class="label">'+k.l+'</div><div class="value" style="color:'+k.vc+'">'+k.v+'</div><div class="sub">'+k.s+'</div></div>').join('');
+const byCat=Object.entries(f.reduce((a,c)=>{const k=c.categoria;a[k]=a[k]||{p1:0,p2:0};a[k].p1+=c.p1||0;a[k].p2+=c.p2||0;return a},{}));
+dC('cAB');CH.cAB=new Chart(document.getElementById('cAB'),{type:'bar',data:{labels:byCat.map(x=>x[0]),datasets:[{label:'1ª Parcela',data:byCat.map(x=>x[1].p1),backgroundColor:'#34D39999',borderRadius:4,borderSkipped:false},{label:'2ª Parcela',data:byCat.map(x=>x[1].p2),backgroundColor:'#60A5FA99',borderRadius:4,borderSkipped:false}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:'#94A3B8',font:{size:10},boxWidth:10,padding:10}},tooltip:{callbacks:{label:c=>' '+fmt(c.raw)}}},scales:{x:{stacked:true,grid:{display:false},ticks:{color:'#94A3B8',font:{size:10}}},y:{stacked:true,grid:{color:'#1E293B'},ticks:{callback:v=>fmtS(v),color:'#64748B'}}}}});
+const byCli=Object.entries(f.reduce((a,c)=>{a[c.cliente]=(a[c.cliente]||0)+c.valor_total;return a},{})).sort((a,b)=>b[1]-a[1]);
+dC('cAC');CH.cAC=new Chart(document.getElementById('cAC'),{type:'bar',data:{labels:byCli.map(x=>x[0]),datasets:[{data:byCli.map(x=>x[1]),backgroundColor:'#A78BFA99',borderRadius:5,borderSkipped:false}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>' '+fmt(c.raw)}}},scales:{x:{grid:{color:'#1E293B'},ticks:{callback:v=>fmtS(v),color:'#64748B',font:{size:10}}},y:{grid:{display:false},ticks:{color:'#E2E8F0',font:{size:10}}}}}});
+const p1T=f.reduce((s,c)=>s+(c.p1||0),0),p2T=f.reduce((s,c)=>s+(c.p2||0),0),execT=(DD.servicos_executados||[]).reduce((s,r)=>s+r.valor,0);
+document.getElementById('fluxo-rows').innerHTML=[
+{fase:'1ª Parcela — Aceite',momento:'A receber na assinatura do contrato',val:fmt(p1T),pct:totF>0?((p1T/totF)*100).toFixed(0)+'%':'—',c:'#34D399',bg:'var(--green-bg)',bc:'#34D39933'},
+{fase:'2ª Parcela — Conclusão',momento:'A receber na entrega do serviço',val:fmt(p2T),pct:totF>0?((p2T/totF)*100).toFixed(0)+'%'*'—',c:'#60A5FA',bg:'var(--blue-bg)',bc:'#60A5FA33'},
+{fase:'Total Executado (Histórico)',momento:'Receita acumulada — serviços concluídos',val:fmt(execT),pct:'—',c:'var(--gold)',bg:'var(--gold-bg)',bc:'#F59E0B33'}
+].map(x=>'<div class="fluxo-row" style="background:'+x.bg+';border-color:'+x.bc+'"><div><div class="fluxo-fase" style="color:'+x.c+'">'+x.fase+'</div><div class="fluxo-moment">'+x.momento+'</div></div><div style="text-align:right"><div class="fluxo-val" style="color:'+x.c+'">'+x.val+'</div><div class="fluxo-pct" style="color:'+x.c+'">'+x.pct+'</div></div></div>').join('');
+document.getElementById('tbl-cnt-aprov').textContent=f.length+' contratos';
+document.getElementById('tbody-aprov').innerHTML=f.map((c,i)=>{
+const iswb=c.categoria==='WallBox SAVE';
+return '<tr style="'+(i%2===0?'background:#0B0F1A':'')+'">'
++'<td class="td-muted">'+c.id+'</td>'
++'<td class="td-cli">'+c.cliente+'</td>'
++'<td><span class="ct-tag '+(iswb?'wallbox':'diag')+'">'+c.categoria+'</span></td>'
++'<td class="td-ct">'+c.tipo+'</td>'
++'<td class="td-muted">'+(c.bairro||'—')+', '+c.cidade+'</td>'
++'<td class="td-muted" style="font-size:11px">'+c.contrato+'</td>'
++'<td class="td-muted">'+c.dt_contrato+'</td>'
++'<td class="td-val">'+fmt(c.valor_total)+'</td>'
++'<td><div class="parcel-wrap"><div class="parcel-row"><span class="parcel-lbl">P1</span><span class="parcel-val">'+fmt(c.p1||0)+'</span></div>'+(c.p2?'<div class="parcel-row"><span class="parcel-lbl">P2</span><span class="parcel-val">'+fmt(c.p2)+'</span></div>':'')+'</div></td>'
++'<td class="td-muted" style="font-size:11px">'+c.cond_pagto+'</td>'
++'<td><span class="status-tag">'+c.status+'</span></td>'
++'</tr>';
+}).join('');
+document.getElementById('tfoot-aprov').innerHTML=f.length?'<td colspan="7" style="text-align:right;color:var(--dim);font-weight:700;font-size:11px;padding-left:20px">TOTAL ('+f.length+')</td><td style="color:var(--gold);font-weight:900;font-size:15px;padding:10px 12px">'+fmt(totF)+'</td><td colspan="3"></td>':'';}
+init();
+</script></body></html>
