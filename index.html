@@ -200,7 +200,7 @@ document.getElementById('tfoot-exec').innerHTML=f.length?'<td colspan="6" style=
 function renderAprov(){
 const all=DD.contratos_aprovados||[],f=fCat==='Todos'?all:all.filter(c=>c.categoria===fCat);
 const cats=[...new Set(all.map(c=>c.categoria))].sort();
-document.getElementById('cat-btns').innerHTML='<button class="btn'+(fCat==='Todos'?' active':'')+'" onclick="setCat('Todos',this)">Todos</button>'+cats.map(c=>'<button class="btn'+(fCat===c?' active':'')+'" onclick="setCat(''+c+'',this)">'+c+'</button>').join('');
+document.getElementById('cat-btns').innerHTML='<button class="btn'+(fCat==='Todos'?' active':'')+'" onclick="setCat(\'Todos\',this)">Todos</button>'+cats.map(c=>'<button class="btn'+(fCat===c?' active':'')+'" onclick="setCat(\''+c+'\',this)">'+c+'</button>').join('');
 const totAll=all.reduce((s,c)=>s+c.valor_total,0),totF=f.reduce((s,c)=>s+c.valor_total,0);
 document.getElementById('total-filtro-aprov').textContent=f.length+' contratos · '+fmt(totF);
 document.getElementById('kpis-aprov').innerHTML=[
@@ -216,7 +216,7 @@ dC('cAC');CH.cAC=new Chart(document.getElementById('cAC'),{type:'bar',data:{labe
 const p1T=f.reduce((s,c)=>s+(c.p1||0),0),p2T=f.reduce((s,c)=>s+(c.p2||0),0),execT=(DD.servicos_executados||[]).reduce((s,r)=>s+r.valor,0);
 document.getElementById('fluxo-rows').innerHTML=[
 {fase:'1ª Parcela — Aceite',momento:'A receber na assinatura do contrato',val:fmt(p1T),pct:totF>0?((p1T/totF)*100).toFixed(0)+'%':'—',c:'#34D399',bg:'var(--green-bg)',bc:'#34D39933'},
-{fase:'2ª Parcela — Conclusão',momento:'A receber na entrega do serviço',val:fmt(p2T),pct:totF>0?((p2T/totF)*100).toFixed(0)+'%'*'—',c:'#60A5FA',bg:'var(--blue-bg)',bc:'#60A5FA33'},
+{fase:'2ª Parcela — Conclusão',momento:'A receber na entrega do serviço',val:fmt(p2T),pct:totF>0?((p2T/totF)*100).toFixed(0)+'%':'—',c:'#60A5FA',bg:'var(--blue-bg)',bc:'#60A5FA33'},
 {fase:'Total Executado (Histórico)',momento:'Receita acumulada — serviços concluídos',val:fmt(execT),pct:'—',c:'var(--gold)',bg:'var(--gold-bg)',bc:'#F59E0B33'}
 ].map(x=>'<div class="fluxo-row" style="background:'+x.bg+';border-color:'+x.bc+'"><div><div class="fluxo-fase" style="color:'+x.c+'">'+x.fase+'</div><div class="fluxo-moment">'+x.momento+'</div></div><div style="text-align:right"><div class="fluxo-val" style="color:'+x.c+'">'+x.val+'</div><div class="fluxo-pct" style="color:'+x.c+'">'+x.pct+'</div></div></div>').join('');
 document.getElementById('tbl-cnt-aprov').textContent=f.length+' contratos';
