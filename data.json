@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-16T16:35:00",
-  "_log": "2026-06-16 — Despesa variável: Uber R$ 250,97 Cartão 16/06/2026. Total 2026: R$ 4.312,12",
+  "updated_at": "2026-06-16T16:40:00",
+  "_log": "2026-06-16 — Despesa variável: 99 R$ 61,64 Cartão 12/06/2026. Total 2026: R$ 4.373,76",
   "servicos_executados": [
     {
       "ano": 2025,
@@ -485,6 +485,17 @@
       "tipo": "Variável",
       "forma_pagto": "Cartão",
       "valor": 250.97,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "12/06/2026",
+      "descricao": "99",
+      "tipo": "Variável",
+      "forma_pagto": "Cartão",
+      "valor": 61.64,
       "pago": true,
       "obs": ""
     }
