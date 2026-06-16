@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-16T12:00:00",
-  "_log": "16/06/2026 — sincronizado com dados_financeiros.md: +4 servicos executados (Edson, Carlos Roberto, Rodrigo, Salles Scorpius); contratos_aprovados corrigidos (removidos concluídos, adicionados Breno, Nice, Netto); despesas mantidas.",
+  "updated_at": "2026-06-16T16:15:37",
+  "_log": "2026-06-16 — Despesa lançada: Cartão Riachuelo R$ 1.544,13 PIX 05/06/2026",
   "servicos_executados": [
     {
       "ano": 2025,
@@ -388,5 +388,17 @@
       "obs": "GWM WallBox 7,4 kW / 32 A | Modo 3 | 10mm² / 28m | DR Tipo A 40A/30mA | DPS Classe II 175V | Materiais por conta do cliente"
     }
   ],
-  "despesas": []
+  "despesas": [
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "05/06/2026",
+      "descricao": "Cartão Riachuelo",
+      "tipo": "Fixa",
+      "forma_pagto": "PIX",
+      "valor": 1544.13,
+      "pago": true,
+      "obs": ""
+    }
+  ]
 }
