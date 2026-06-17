@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-17T00:00:00",
-  "_log": "17/06/2026 — Adicionado array despesas (11 registros). Lançamento: Conta de Energia SJC R$ 280,22 PIX 16/06/2026.",
+  "updated_at": "2026-06-17T12:00:00",
+  "_log": "17/06/2026 — Aluguel R$ 1.200,00 PIX 17/06/2026. Total 2026: R$ 5.853,98 (12 despesas).",
   "despesas": [
     {
       "ano": 2026,
@@ -120,6 +120,17 @@
       "tipo": "Fixa",
       "forma_pagto": "PIX",
       "valor": 280.22,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "17/06/2026",
+      "descricao": "Aluguel",
+      "tipo": "Fixa",
+      "forma_pagto": "PIX",
+      "valor": 1200.00,
       "pago": true,
       "obs": ""
     }
