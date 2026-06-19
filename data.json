@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-17T21:00:00",
-  "_log": "17/06/2026 — Sync WallBox: +4 serviços junho (Edson, Carlos Roberto, Rodrigo, Imobiliária Salles) + contratos corrigidos (Breno Leite, Nice, Netto adicionados; Rodrigo/Carlos Roberto/Edson movidos para executados). 17/06/2026 — Mercadinho R$ 105,56 Débito 17/06/2026. Total 2026: R$ 5.959,54 (13 despesas).",
+  "updated_at": "2026-06-19T00:00:00",
+  "_log": "17/06/2026 — Sync WallBox: +4 serviços junho (Edson, Carlos Roberto, Rodrigo, Imobiliária Salles) + contratos corrigidos (Breno Leite, Nice, Netto adicionados; Rodrigo/Carlos Roberto/Edson movidos para executados). 17/06/2026 — Mercadinho R$ 105,56 Débito 17/06/2026. Total 2026: R$ 5.959,54 (13 despesas). 19/06/2026 — 3 despesas variáveis: Mercadinho R$44,00 (18/06), Bolo R$26,00 (19/06), Chapa Ferro R$17,00 (19/06). Total 2026: R$6.046,54 (16 despesas).",
   "despesas": [
     {
       "ano": 2026,
@@ -142,6 +142,39 @@
       "tipo": "Variável",
       "forma_pagto": "Débito",
       "valor": 105.56,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "18/06/2026",
+      "descricao": "Mercadinho",
+      "tipo": "Variável",
+      "forma_pagto": "Débito",
+      "valor": 44,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "19/06/2026",
+      "descricao": "Bolo",
+      "tipo": "Variável",
+      "forma_pagto": "Débito",
+      "valor": 26,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "19/06/2026",
+      "descricao": "Chapa Ferro",
+      "tipo": "Variável",
+      "forma_pagto": "PIX",
+      "valor": 17,
       "pago": true,
       "obs": ""
     }
