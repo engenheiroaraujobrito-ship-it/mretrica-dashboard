@@ -287,7 +287,29 @@
       "valor": 2350.32,
       "fonte": "NFS-e",
       "nf": "33"
-    }
+    },
+        {
+                "ano": 2026,
+                "cliente": "Ricardo Longo",
+                "tipo": "WallBox SAVE",
+                "cidade": "SJC",
+                "bairro": "Urbanova",
+                "data": "2026-07",
+                "valor": 580,
+                "fonte": "Proposta",
+                "nf": ""
+        },
+        {
+                "ano": 2026,
+                "cliente": "Agnaldo Polônio",
+                "tipo": "WallBox SAVE",
+                "cidade": "SJC",
+                "bairro": "Urbanova",
+                "data": "2026-07",
+                "valor": 555,
+                "fonte": "NFS-e",
+                "nf": "1"
+        }
   ],
   "contratos_aprovados": [
     {
