@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-07-10T03:47:59.373Z",
-  "_log": "24/06/2026 — Camila (CT-SAVE-005/2026, R$537,52) adicionada em contratos_aprovados. Netto (NFS-e #33, R$2.350,32) adicionado em servicos_executados (havia ficado pendente de 19/06). 16/06/2026 — Adicionada secao despesas (array vazio). Removido Jeferson (Jardim Motorama) de contratos_aprovados (valor R$0, Aguardando Visita Tecnica).",
+  "updated_at": "2026-07-10T04:06:48.844Z",
+  "_log": "10/07/2026 — Restauradas 16 despesas de despesas.md (31/05–19/06, total R$ 6.046,54) que nunca haviam sido sincronizadas ao data.json. | 24/06/2026 — Camila (CT-SAVE-005/2026, R$537,52) adicionada em contratos_aprovados. Netto (NFS-e #33, R$2.350,32) adicionado em servicos_executados (havia ficado pendente de 19/06). 16/06/2026 — Adicionada secao despesas (array vazio). Removido Jeferson (Jardim Motorama) de contratos_aprovados (valor R$0, Aguardando Visita Tecnica).",
   "servicos_executados": [
     {
       "ano": 2025,
@@ -421,7 +421,184 @@
       "obs": "Cabo 6mm² / 2,70m | PT-SAVE-014/2026"
     }
   ],
-  "despesas": [],
+  "despesas": [
+    {
+      "ano": 2026,
+      "mes": "2026-05",
+      "data": "31/05/2026",
+      "descricao": "Cartão MEI",
+      "tipo": "Fixa",
+      "forma_pagto": "PIX",
+      "valor": 672.71,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "03/06/2026",
+      "descricao": "Empréstimo INSS",
+      "tipo": "Fixa",
+      "forma_pagto": "PIX",
+      "valor": 175,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "05/06/2026",
+      "descricao": "Cartão Riachuelo",
+      "tipo": "Fixa",
+      "forma_pagto": "PIX",
+      "valor": 1544.13,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "05/06/2026",
+      "descricao": "Internet Casa",
+      "tipo": "Fixa",
+      "forma_pagto": "PIX",
+      "valor": 109.99,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "05/06/2026",
+      "descricao": "Cartão Casas Bahia",
+      "tipo": "Fixa",
+      "forma_pagto": "Boleto",
+      "valor": 610,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "10/06/2026",
+      "descricao": "Plano Claro",
+      "tipo": "Fixa",
+      "forma_pagto": "PIX",
+      "valor": 36.9,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "10/06/2026",
+      "descricao": "Conta de Água",
+      "tipo": "Fixa",
+      "forma_pagto": "PIX",
+      "valor": 75.11,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "12/06/2026",
+      "descricao": "99",
+      "tipo": "Variável",
+      "forma_pagto": "Cartão",
+      "valor": 61.64,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "15/06/2026",
+      "descricao": "Cartão Atacadão",
+      "tipo": "Fixa",
+      "forma_pagto": "PIX",
+      "valor": 837.31,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "16/06/2026",
+      "descricao": "Uber",
+      "tipo": "Variável",
+      "forma_pagto": "Cartão",
+      "valor": 250.97,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "16/06/2026",
+      "descricao": "Conta de Energia SJC",
+      "tipo": "Fixa",
+      "forma_pagto": "PIX",
+      "valor": 280.22,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "17/06/2026",
+      "descricao": "Aluguel",
+      "tipo": "Fixa",
+      "forma_pagto": "PIX",
+      "valor": 1200,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "17/06/2026",
+      "descricao": "Mercadinho",
+      "tipo": "Variável",
+      "forma_pagto": "Débito",
+      "valor": 105.56,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "18/06/2026",
+      "descricao": "Mercadinho",
+      "tipo": "Variável",
+      "forma_pagto": "Débito",
+      "valor": 44,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "19/06/2026",
+      "descricao": "Bolo",
+      "tipo": "Variável",
+      "forma_pagto": "Débito",
+      "valor": 26,
+      "pago": true,
+      "obs": ""
+    },
+    {
+      "ano": 2026,
+      "mes": "2026-06",
+      "data": "19/06/2026",
+      "descricao": "Chapa Ferro",
+      "tipo": "Variável",
+      "forma_pagto": "PIX",
+      "valor": 17,
+      "pago": true,
+      "obs": ""
+    }
+  ],
   "clientes": [
     {
       "nome": "Teste Fase A",
