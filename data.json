@@ -425,8 +425,8 @@
   "clientes": [
     {
       "nome": "Teste Fase A",
-      "estagio": "aprovado",
-      "atualizadoEm": "2026-07-10T03:05:17.819Z"
+      "estagio": "concluido",
+      "atualizadoEm": "2026-07-10T03:09:53.874Z"
     }
   ]
 }
