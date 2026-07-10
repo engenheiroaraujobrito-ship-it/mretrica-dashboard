@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-10T16:40:14.702Z",
+  "updated_at": "2026-07-10T17:24:50.599Z",
   "_log": "10/07/2026 — Restauradas 16 despesas de despesas.md (31/05–19/06, total R$ 6.046,54) que nunca haviam sido sincronizadas ao data.json. | 24/06/2026 — Camila (CT-SAVE-005/2026, R$537,52) adicionada em contratos_aprovados. Netto (NFS-e #33, R$2.350,32) adicionado em servicos_executados (havia ficado pendente de 19/06). 16/06/2026 — Adicionada secao despesas (array vazio). Removido Jeferson (Jardim Motorama) de contratos_aprovados (valor R$0, Aguardando Visita Tecnica).",
   "servicos_executados": [
     {
@@ -309,17 +309,6 @@
       "valor": 555,
       "fonte": "NFS-e",
       "nf": "1"
-    },
-    {
-      "ano": 2026,
-      "cliente": "Teste Ponta a Ponta",
-      "tipo": "Instalação WallBox SAVE – Modo 3 (bifásico)",
-      "cidade": "",
-      "bairro": "",
-      "data": "2026-07",
-      "valor": 999,
-      "fonte": "NFS-e",
-      "nf": "NF-TESTE 001"
     }
   ],
   "contratos_aprovados": [
