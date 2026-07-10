@@ -119,7 +119,7 @@ tfoot td{background:#111827;padding:10px 12px;border-top:2px solid var(--bord2);
 <div class="card fade-in">
   <div class="card-header"><div><div class="card-title">Funil de Clientes — Bot WhatsApp/Slack</div><div class="card-sub">Fonte: automacao Fase A (funil_bot)</div></div><span class="cbadge" id="tbl-cnt-funil">—</span></div>
   <div class="tbl-wrap"><table>
-    <thead><tr><th>Cliente</th><th>Telefone</th><th>Estagio</th><th>Criado em</th><th>Atualizado em</th></tr></thead>
+    <thead><tr><th>Cliente</th><th>Telefone</th><th>Estagio</th><th>Status</th><th>Criado em</th><th>Atualizado em</th></tr></thead>
     <tbody id="tbody-funil"></tbody>
   </table></div>
 </div>
@@ -127,6 +127,7 @@ tfoot td{background:#111827;padding:10px 12px;border-top:2px solid var(--bord2);
 <script>
 
 const FUNIL_EST={novo:{lbl:'Novo',c:'#60A5FA',bg:'#0D1B33'},aprovado:{lbl:'Aprovado',c:'#F59E0B',bg:'#1C1600'},concluido:{lbl:'Concluido',c:'#34D399',bg:'#022C22'}};
+const STATUS_FUNIL={'Aguardando Valor para envio':{c:'#F59E0B',bg:'#1C1600'},'Aguardando resposta do cliente':{c:'#60A5FA',bg:'#0D1B33'}};
 const fmtDtFunil=s=>{if(!s)return'—';const d=new Date(s);return isNaN(d)?s:d.toLocaleDateString('pt-BR')+' '+d.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});};
 function renderFunil(){
   const all=(typeof DD!=='undefined'&&DD.funil_bot)?DD.funil_bot:[];
@@ -136,15 +137,19 @@ function renderFunil(){
     {l:'Total no Funil',v:all.length,s:'clientes captados pelo bot',bg:'var(--gold-bg)',bc:'#F59E0B33',vc:'var(--gold)'},
     {l:'Novos',v:cnt('novo'),s:'aguardando proposta',bg:'var(--blue-bg)',bc:'#60A5FA33',vc:'var(--blue)'},
     {l:'Aprovados',v:cnt('aprovado'),s:'aguardando execucao',bg:'#1C1600',bc:'#F59E0B33',vc:'#F59E0B'},
-    {l:'Concluidos',v:cnt('concluido'),s:'servico entregue',bg:'var(--green-bg)',bc:'#34D39933',vc:'var(--green)'}
+    {l:'Concluidos',v:cnt('concluido'),s:'servico entregue',bg:'var(--green-bg)',bc:'#34D39933',vc:'var(--green)'},
+    {l:'Aguardando Valor',v:all.filter(x=>x.status==='Aguardando Valor para envio').length,s:'proposta sem valor definido',bg:'#1C1600',bc:'#F59E0B33',vc:'#F59E0B'},
+    {l:'Aguardando Resposta',v:all.filter(x=>x.status==='Aguardando resposta do cliente').length,s:'proposta enviada ao cliente',bg:'var(--blue-bg)',bc:'#60A5FA33',vc:'var(--blue)'}
   ].map(k=>'<div class="kpi fade-in" style="background:'+k.bg+';border-color:'+k.bc+'"><div class="label">'+k.l+'</div><div class="value" style="color:'+k.vc+'">'+k.v+'</div><div class="sub">'+k.s+'</div></div>').join('');
   document.getElementById('tbl-cnt-funil').textContent=all.length+' clientes';
   const ord={novo:0,aprovado:1,concluido:2};
   const sorted=[...all].sort((a,b)=>(ord[a.estagio]??9)-(ord[b.estagio]??9)||(b.atualizadoEm||'').localeCompare(a.atualizadoEm||''));
   document.getElementById('tbody-funil').innerHTML=sorted.length?sorted.map((c,i)=>{
     const e=FUNIL_EST[c.estagio]||{lbl:c.estagio||'—',c:'#94A3B8',bg:'#1E293B'};
-    return '<tr style="'+(i%2===0?'background:#0B0F1A':'')+'"><td class="td-cli">'+(c.nome||'—')+'</td><td class="td-muted">'+(c.telefone||'—')+'</td><td><span class="cat-tag-desp" style="background:'+e.bg+';color:'+e.c+';border:1px solid '+e.c+'33">'+e.lbl+'</span></td><td class="td-muted">'+fmtDtFunil(c.criadoEm)+'</td><td class="td-muted">'+fmtDtFunil(c.atualizadoEm)+'</td></tr>';
-  }).join(''):'<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:32px">Nenhum cliente no funil ainda.</td></tr>';
+    const st=STATUS_FUNIL[c.status];
+    const statusCell=c.status?('<span class="cat-tag-desp" style="background:'+(st?st.bg:'#1E293B')+';color:'+(st?st.c:'#94A3B8')+';border:1px solid '+(st?st.c:'#94A3B8')+'33">'+c.status+'</span>'):'<span class="td-muted">—</span>';
+    return '<tr style="'+(i%2===0?'background:#0B0F1A':'')+'"><td class="td-cli">'+(c.nome||'—')+'</td><td class="td-muted">'+(c.telefone||'—')+'</td><td><span class="cat-tag-desp" style="background:'+e.bg+';color:'+e.c+';border:1px solid '+e.c+'33">'+e.lbl+'</span></td><td>'+statusCell+'</td><td class="td-muted">'+fmtDtFunil(c.criadoEm)+'</td><td class="td-muted">'+fmtDtFunil(c.atualizadoEm)+'</td></tr>';
+  }).join(''):'<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:32px">Nenhum cliente no funil ainda.</td></tr>';
 }
 
 const DATA_URL='https://raw.githubusercontent.com/engenheiroaraujobrito-ship-it/mretrica-dashboard/main/data.json';
