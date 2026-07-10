@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-10T04:06:48.844Z",
+  "updated_at": "2026-07-10T04:21:20.684Z",
   "_log": "10/07/2026 — Restauradas 16 despesas de despesas.md (31/05–19/06, total R$ 6.046,54) que nunca haviam sido sincronizadas ao data.json. | 24/06/2026 — Camila (CT-SAVE-005/2026, R$537,52) adicionada em contratos_aprovados. Netto (NFS-e #33, R$2.350,32) adicionado em servicos_executados (havia ficado pendente de 19/06). 16/06/2026 — Adicionada secao despesas (array vazio). Removido Jeferson (Jardim Motorama) de contratos_aprovados (valor R$0, Aguardando Visita Tecnica).",
   "servicos_executados": [
     {
@@ -613,6 +613,13 @@
       "estagio": "aprovado",
       "criadoEm": "2026-07-10T03:47:59.373Z",
       "atualizadoEm": "2026-07-10T03:47:59.373Z"
+    },
+    {
+      "nome": "Teste Dashboard",
+      "telefone": "+5511988887777",
+      "estagio": "aprovado",
+      "criadoEm": "2026-07-10T04:21:20.684Z",
+      "atualizadoEm": "2026-07-10T04:21:20.684Z"
     }
   ]
 }
