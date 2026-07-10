@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-07-10T15:46:55.155Z",
+  "updated_at": "2026-07-10T16:28:18.807Z",
   "_log": "10/07/2026 — Restauradas 16 despesas de despesas.md (31/05–19/06, total R$ 6.046,54) que nunca haviam sido sincronizadas ao data.json. | 24/06/2026 — Camila (CT-SAVE-005/2026, R$537,52) adicionada em contratos_aprovados. Netto (NFS-e #33, R$2.350,32) adicionado em servicos_executados (havia ficado pendente de 19/06). 16/06/2026 — Adicionada secao despesas (array vazio). Removido Jeferson (Jardim Motorama) de contratos_aprovados (valor R$0, Aguardando Visita Tecnica).",
   "servicos_executados": [
     {
@@ -419,6 +419,25 @@
       "cond_pagto": "Parcela única na conclusão dos serviços",
       "status": "Aguardando Agenda",
       "obs": "Cabo 6mm² / 2,70m | PT-SAVE-014/2026"
+    },
+    {
+      "id": 7,
+      "cliente": "Teste Ponta a Ponta",
+      "categoria": "WallBox SAVE",
+      "tipo": "Instalação WallBox SAVE – Modo 3 (bifásico)",
+      "cidade": "",
+      "bairro": "",
+      "endereco": "Rua Terezina, M84 fundos",
+      "contrato": "CT-SAVE-006/2026",
+      "dt_contrato": "2026-07",
+      "ano": 2026,
+      "valor_total": 999,
+      "p1": 999,
+      "p2": 0,
+      "cond_pagto": "Parcela única na conclusão",
+      "status": "Aguardando Agenda",
+      "obs": "Disjuntor: 63 amperes A | Fase: bifásico | Distância: 15 metros m",
+      "_proposta": "PT-SAVE-023/2026"
     }
   ],
   "despesas": [
@@ -599,14 +618,5 @@
       "obs": ""
     }
   ],
-  "funil_bot": [
-    {
-      "nome": "Teste Ponta a Ponta",
-      "telefone": "+5512999990000",
-      "criadoEm": "2026-07-10T14:24:09.059Z",
-      "estagio": "novo",
-      "atualizadoEm": "2026-07-10T15:46:55.155Z",
-      "status": "Aguardando resposta do cliente"
-    }
-  ]
+  "funil_bot": []
 }
